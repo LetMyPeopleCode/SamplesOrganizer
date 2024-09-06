@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
-  "applicationId": "js.neutralino.sample",
-  "version": "1.0.0",
+  "applicationId": "SamplesOrganizer",
+  "version": "0.1.0",
   "defaultMode": "window",
   "port": 0,
   "documentRoot": "/resources/",
@@ -33,10 +33,10 @@
   "modes": {
     "window": {
       "title": "SamplesOrganizer",
-      "width": 800,
-      "height": 500,
-      "minWidth": 400,
-      "minHeight": 200,
+      "width": 1024,
+      "height": 724,
+      "minWidth": 640,
+      "minHeight": 480,
       "center": true,
       "fullScreen": false,
       "alwaysOnTop": false,

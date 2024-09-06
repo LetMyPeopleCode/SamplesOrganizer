@@ -9,27 +9,34 @@
     with details regarding the running Neutralino application, including
     its ID, port, operating system, and version information.
 */
-function showInfo() {
-    document.getElementById('info').innerHTML = `
-        ${NL_APPID} is running on port ${NL_PORT} inside ${NL_OS}
-        <br/><br/>
-        <span>server: v${NL_VERSION} . client: v${NL_CVERSION}</span>
-        `;
+
+// set up screen switching
+const nav_buttons = ["browse_top","search_top","settings_top","help_top"];
+const nav_screens = ["browse_screen","search_screen","settings_screen","help_screen"];
+nav_buttons.forEach((element) => {
+    document.getElementById(element).addEventListener("click",toggleScreens)
+})
+
+function toggleScreens(e){
+    let my_button = e.target.id;
+    let button_id = nav_buttons.indexOf(my_button);
+    if(button_id < 0){
+        alert("WTF"); return false;
+    }
+    for(let i = 0; i < nav_buttons.length; i++){
+        let tgtscreen = document.getElementById(nav_screens[i]);
+        let tgtbutton = document.getElementById(nav_buttons[i]);
+        if(tgtscreen == null) console.log("no way", i);
+        if(i === button_id){
+            tgtscreen.removeAttribute("hidden");
+            tgtbutton.className = "nav-link active"
+        } else {
+            tgtscreen.setAttribute("hidden","hidden");
+            tgtbutton.className = "nav-link";
+        }
+    }
 }
 
-/*
-    Function to open the official Neutralino documentation in the default web browser.
-*/
-function openDocs() {
-    Neutralino.os.open("https://neutralino.js.org/docs");
-}
-
-/*
-    Function to open a tutorial video on Neutralino's official YouTube channel in the default web browser.
-*/
-function openTutorial() {
-    Neutralino.os.open("https://www.youtube.com/c/CodeZri");
-}
 
 /*
     Function to set up a system tray menu with options specific to the window mode.
@@ -95,5 +102,3 @@ if(NL_OS != "Darwin") { // TODO: Fix https://github.com/neutralinojs/neutralinoj
     setTray();
 }
 
-// Display app information
-showInfo();
