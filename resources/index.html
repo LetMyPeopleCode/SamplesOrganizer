@@ -2,26 +2,148 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>NeutralinoJs sample app</title>
+    <title>SamplesOrganizer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/samplesOrganizer.css">
   </head>
   <body>
-    <div id="neutralinoapp">
-      <h1>NeutralinoJs</h1>
-      <div id="info"></div>
-      <br/>
-      <img src="/icons/logo.gif" alt="Neutralinojs" />
-      <div>
-        <a href="#" onclick="openDocs();">Docs</a> &middot;  
-        <a href="#" onclick="openTutorial();">Video tutorial</a>
+<!-- MODAL FOR INFO -->
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">SamplesOrganizer</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div id="abt-modal-body" style="padding:10px;">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
+  </div>
+</div>
+<!-- END MODAL-->
+<!-- MODAL FOR Browse Picker -->
+<!-- Modal -->
+<div class="modal fade" id="browseHelpModal" tabindex="-1" aria-labelledby="browseHelpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Using The Folder Picker</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div id="abt-modal-body" style="padding:10px;">
+        Selecting "Open a samples folder" will open a file dialogue. Navigate to and select the directory you want to open.<br>
+        &nbsp;<br>
+        The process will gather file information for all files in that folder and its subfolders, so if you open a folder with thousands of files, it could take a long time or possibly overload the app. To avoid this, drill down to a subfolder that has fewer files.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END MODAL-->
+
+
+<div id="splash_screen" class="container-fluid"><h1>Splash</h1></div>
+<div id="main_app" class="container-fluid" hidden>
+<!-- TOP NAVIGATION BAR-->
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><img src="icons/logo_64.png" height="40" alt="SamplesOrganizer Logo" data-bs-toggle="tooltip" data-bs-title="About this app"></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" id="browse_top" aria-current="page" href="#">Browse</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="search_top" href="#">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="settings_top" href="#">Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="help_top" href="#">Help</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- END TOP NAV-->
+
+<!-- Browse Screen-->
+  <div id="browse_screen" class="container-fluid full-height main-app row" style="width:100%";">
+<div class="row">
+  <div class="col-5">
+    <!-- FILE PICKER -->
+    <div style="padding:5px;"><button type="button" class="btn btn-primary" id="fp-open">Open a samples folder</button>  <a class="navbar-brand" href="#" data-bs-toggle="modal" data-bs-target="#browseHelpModal"><img src="icons/question.png" height="32" alt="SamplesOrganizer Logo" data-bs-toggle="tooltip" data-bs-title="About this app"></a></div>
+    <div class="filepicker" id="filepicker">
+    </div>  
+  </div>
+  <div class="col-7 br browse-col2">
+    <div class="row browse-inner br" >
+      <div class = "col-6 maxit br">
+        <div class = "br maxit">Fileinfo</div>
+      </div>
+      <div class = "col-6 maxit br">
+        <div class = "br maxit">tags</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 br player">
+        <div class="br player">player</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Search Screen-->
+  <div id="search_screen" class=".container-fluid" hidden>
+    <h1>Search</h1>
+  </div>
+  <div id="settings_screen" class=".container-fluid" hidden>
+    <h1>Settings</h1>
+  </div>
+  <div id="help_screen" class=".container-fluid" hidden>
+    <h1>Help</h1>
+  </div>
+
+
+
+
+</div>
+
+
+
     <!-- Neutralino.js client. This file is gitignored, 
         because `neu update` typically downloads it.
         Avoid copy-pasting it. 
         -->
     <script src="/js/neutralino.js"></script>
     <!-- Your app's source files -->
-    <script src="/js/main.js"></script>
-  </body>
+    <script src="js/external/popper.min.js"></script>
+    <script src="js/external/bootstrap.bundle.min.js"></script>
+    <script src="js/external/lokijs.js"></script>
+    <script src="js/modules/constants.js"></script>
+    <script src="js/modules/UIStrings.js"></script>
+    <script src="js/modules/utils.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+      console.log("going");
+      window.onload = function(){
+        setTimeout(function(){
+          document.getElementById("splash_screen").setAttribute("hidden","hidden");
+          document.getElementById("main_app").removeAttribute("hidden");
+        }, 1000);
+      }
+    </script>
 </html>
