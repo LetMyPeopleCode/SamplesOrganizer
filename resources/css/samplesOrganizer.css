@@ -21,11 +21,14 @@
   width:100%;
 }
 
+<<<<<<< HEAD
 .br {
   /* uncomment the line below to outline every item with a "br" class assignment with a blue border */
   /* border: 2px solid blue; */  
 }
 
+=======
+>>>>>>> refs/remotes/origin/main
 /* Ferda buttons */
 .nav-link.active {
   background-color: #383;
@@ -52,6 +55,7 @@
   max-height: 32px;
   height: 32px;
   margin-bottom: 19px;
+<<<<<<< HEAD
 }
 
 /* Screens */
@@ -95,4 +99,6 @@ html, body, .container, .container-fluid {
 .player {
   min-height: 70px;
   max-height: 100px;
+=======
+>>>>>>> refs/remotes/origin/main
 }

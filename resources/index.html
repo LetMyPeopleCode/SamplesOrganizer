@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/samplesOrganizer.css">
   </head>
   <body>
+<<<<<<< HEAD
 <!-- MODAL FOR INFO -->
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -114,6 +115,48 @@
     <h1>Settings</h1>
   </div>
   <div id="help_screen" class=".container-fluid" hidden>
+=======
+<div id="splash_screen" class=".container-fluid"><h1>Splash</h1></div>
+<div id="main_app" class=".container-fluid" hidden>
+<!-- TOP NAVIGATION BAR-->
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"><img src="icons/logo_64.png" height="40" alt="SamplesOrganizer Logo"></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" id="browse_top" aria-current="page" href="#">Browse</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="search_top" href="#">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="settings_top" href="#">Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="help_top" href="#">Help</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- END TOP NAV-->
+
+
+  <div id="browse_screen">
+    <h1>Browse Me</h1>
+  </div>
+  <div id="search_screen" hidden>
+    <h1>Search</h1>
+  </div>
+  <div id="settings_screen" hidden>
+    <h1>Settings</h1>
+  </div>
+  <div id="help_screen" hidden>
+>>>>>>> refs/remotes/origin/main
     <h1>Help</h1>
   </div>
 
@@ -130,6 +173,7 @@
         -->
     <script src="/js/neutralino.js"></script>
     <!-- Your app's source files -->
+<<<<<<< HEAD
     <script src="js/external/popper.min.js"></script>
     <script src="js/external/bootstrap.bundle.min.js"></script>
     <script src="js/external/lokijs.js"></script>
@@ -137,6 +181,11 @@
     <script src="js/modules/UIStrings.js"></script>
     <script src="js/modules/utils.js"></script>
     <script src="js/main.js"></script>
+=======
+    <script src="js/external/bootstrap.bundle.min.js"></script>
+    <script src="js/external/lokijs.js"></script>
+    <script src="/js/main.js"></script>
+>>>>>>> refs/remotes/origin/main
     <script>
       console.log("going");
       window.onload = function(){
