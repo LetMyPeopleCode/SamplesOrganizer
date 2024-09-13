@@ -26,6 +26,7 @@
   /* border: 2px solid blue; */  
 }
 
+
 /* Ferda buttons */
 .nav-link.active {
   background-color: #383;
@@ -33,7 +34,7 @@
   color: #FFF !important;
   font-weight:700;
 }
-.nav-item,{
+.nav-item{
   text-align:center;
   width: 80px;
   min-width: 80px;
@@ -81,18 +82,44 @@ html, body, .container, .container-fluid {
 }
 
 .filepicker {
-  max-height: 90%;
-  max-width: 80%;
-  width: 80%;
-  height: 90%;
-  min-height: 45%;
+  font-size: 12px;
+  width: 400px;
+  min-width: 250px;
+  height: 600px;
   background-color: #CCD;
   border: 1px solid #000;
+  overflow: hidden;
   overflow-y: scroll;
   overflow-x: hidden;
+  white-space: nowrap;
+}
+
+.fptop {
+  padding:5px;
+  min-width:240px;
+}
+
+.fp-wrapper {
+  flex-grow: 1;
+  max-width: 1300px;
+  min-width: 260px;
 }
 
 .player {
   min-height: 70px;
   max-height: 100px;
+}
+
+.mtExtra {
+  background-color: #383;
+  color:aliceblue;
+}
+.mtExtra-red {
+  background-color: #DC143C;
+  color:white;
+}
+.center-title {
+  font-weight: 900;
+  font-size: 28px !IMPORTANT;
+  text-align:center !IMPORTANT;
 }

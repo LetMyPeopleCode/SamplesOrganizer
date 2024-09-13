@@ -8,9 +8,4 @@ const APPVERSION = {
 
 //sound extensions this knows how to handle
 // .mid and a few others to be added as we can find libraries to handle them
-const SOUNDEXT = [
-  "wav",
-  "ogg",
-  "mp3",
-  "mp4"
-];
+const SOUNDEXT = [".mpeg", ".aac", ".mp3", ".mp4", ".wav", ".webm", ".3gpp", ".3gpp2"];

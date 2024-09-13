@@ -1,7 +1,12 @@
 const UTILS = {};
 
-// Get a named environment variable
-UTILS.getEnv = async function(myStr){
-  let val = await Neutralino.os.getEnv(myStr);
-  return val;
+UTILS.sleep = function(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+UTILS.errorModal = function(errorMsg){
+    let mymodal;
+    document.getElementById("err-modal-body").innerHTML = errorMsg;
+    myModal = new bootstrap.Modal(document.getElementById('errorModal'), {})
+    myModal.show();
 }
