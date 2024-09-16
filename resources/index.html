@@ -119,7 +119,14 @@
     </div>
     <div class="row">
       <div class="col-12 br player">
-        <div class="br player"><audio controls id="haudio"></audio></div>
+        <div class="br player">
+          <audio hidden id="hplayer"></audio>
+          <midi-player src="" class="midiplayer" hidden id="mplayer"></midi-player>
+</midi-player>
+          <div id="player-controls">
+            <img src="icons/player-play.svg" class="playerbutton" id="play_button" data-bs-toggle="tooltip" data-bs-title="PLAY start/stop"> &nbsp; <img src="icons/player-pause.svg" class="playerbutton" id="pause_button" data-bs-toggle="tooltip" data-bs-title="PAUSE on/off"> &nbsp; <img src="icons/player-loop.svg" class="playerbutton" id="loop_button" data-bs-toggle="tooltip" data-bs-title="LOOP on/off"> &nbsp; <span id="clip_progress" class="playtime">0:00</span> / <span id="clip_length" class="playtime">0:00</span><br><span id="clip_filename" class="clip_file">No file selected</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -150,9 +157,11 @@
     <script src="js/external/popper.min.js"></script>
     <script src="js/external/bootstrap.bundle.min.js"></script>
     <script src="js/external/lokijs.js"></script>
+    <script src="js/external/html-midi-player.js"></script>
     <script src="js/modules/constants.js"></script>
     <script src="js/modules/UIStrings.js"></script>
     <script src="js/modules/utils.js"></script>
+    <script src="js/modules/player.js"></script>
     <script src="js/main.js"></script>
     <script>
       console.log("going");

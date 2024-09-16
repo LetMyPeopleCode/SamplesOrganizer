@@ -10,3 +10,4 @@ UTILS.errorModal = function(errorMsg){
     myModal = new bootstrap.Modal(document.getElementById('errorModal'), {})
     myModal.show();
 }
+

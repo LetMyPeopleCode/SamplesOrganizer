@@ -152,27 +152,3 @@ async function sortFiles(files){
   });
   return sorted;
 }
-
-//media player functionality
-
-async function playFile(e){
-  console.log("clicked")
-  console.dir(e.srcElement.attributes["picker-path"].value);
-  let content = await Neutralino.filesystem.readBinaryFile(e.srcElement.attributes["picker-path"].value);
-  let playable = await convertAudio(content);
-  let mimeType = e.srcElement.attributes["picker-type"].value.replace('.','');
-  let dataURI = `data:audio/${mimeType};base64,${playable}`;
-  haudio.src = dataURI;
-  //haudio.play();
-  return;
-}
-
-async function convertAudio( buffer ) {
-    var binary = '';
-    var bytes = new Uint8Array( buffer );
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
-    }
-    return window.btoa( binary );
-}

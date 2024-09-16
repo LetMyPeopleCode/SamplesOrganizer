@@ -123,3 +123,23 @@ html, body, .container, .container-fluid {
   font-size: 28px !IMPORTANT;
   text-align:center !IMPORTANT;
 }
+
+.playerbutton {
+  margin: 5px;
+  height: 30px;
+  width: 30px;  
+}
+
+.midiplayer {
+  visibility: hidden;
+}
+
+.clip_file {
+  font-size: 11px;
+  font-style: italic;
+  max-width:300px;
+  min-width:150px;
+  display:block;
+  margin-left: 20px;
+  margin-right: 20px;
+}
