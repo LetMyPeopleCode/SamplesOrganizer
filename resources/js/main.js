@@ -38,6 +38,17 @@ document.getElementById("repoclick").addEventListener("click", (e) => {
 });
 /* END populate modal(s) */
 
+function catalogTabIndex() {
+  let all_elements = Array.from(document.querySelectorAll(
+    'a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])'
+  )).filter(el => !el.hasAttribute('disabled'));
+  return all_elements;  
+}
+
+// init the all tabs var
+var allTabs;
+allTabs = catalogTabIndex();
+
 // START WINDOW RESIZE HANDLERS
 // Using percentages in CSS for certain elements is not working well when they get filled with content.
 // so let's try to use absolute values and use the DOM to handle sizing them.
@@ -73,7 +84,6 @@ function toggleScreens(e){
   for(let i = 0; i < nav_buttons.length; i++){
       let tgtscreen = document.getElementById(nav_screens[i]);
       let tgtbutton = document.getElementById(nav_buttons[i]);
-      if(tgtscreen == null) console.log("no way", i);
       if(i === button_id){
           tgtscreen.removeAttribute("hidden");
           tgtbutton.className = "nav-link active"
@@ -100,6 +110,9 @@ async function getFolderChoice(){
   populatePickerController(folderChoice);
 }
 
+// set a GLOBAL variable for the tabindex;
+var allTabs = [];
+
 // Populate the picker
 async function populatePickerController(folderChoice){
   let fs = Neutralino.filesystem;
@@ -124,9 +137,12 @@ async function populatePickerController(folderChoice){
     let strong = await UTILS.sleep(250);
     counter++;
   }
+
+  let ti = 20;
   
   files.forEach((fileinfo) => {
-    fileshtml += `<a href="#" picker-path="${fileinfo.filepath}" picker-type="${fileinfo.filetype}" data-bs-toggle="tooltip" data-bs-title="${fileinfo.filename}" onclick="playFile" class="filename">${fileinfo.filename}</a><br>`;
+    ti+=1;
+    fileshtml += `<button picker-path="${fileinfo.filepath}" picker-type="${fileinfo.filetype}" class="filename" tabindex=${ti} >${fileinfo.filename}</button><br>`;
   });
   fpicker.innerHTML = fileshtml;
   new bootstrap.Tooltip("body", {
@@ -134,10 +150,27 @@ async function populatePickerController(folderChoice){
   });
   //add clickability
   fpicker.addEventListener("click",(e)=>{
-      if(e.target.className === "filename"){
+      if(e.target.className.includes("filename")){
         playFile(e);
       }
   });
+  fpicker.addEventListener("keydown",(e)=>{
+    if(e.key == "Enter"){
+      if(e.target.className.includes("filename")){
+        playFile(e);
+      }
+    }
+    if(e.key == "ArrowDown" || e.key == "ArrowUp"){
+      let direction = (e.key == "ArrowDown") ? 1 : -1;
+      if(e.target.className.includes("typehere")){
+        return;
+      } else {
+        e.preventDefault();
+        focusNextElement(direction);
+      }
+    }
+  });
+  allTabs = catalogTabIndex();
 }
 
 // Sort through files before they populate into the picker returning ONLY the sounds
@@ -152,3 +185,35 @@ async function sortFiles(files){
   });
   return sorted;
 }
+
+
+// establish keyboard controls
+document.addEventListener("keydown", (e)=>{
+  if(document.activeElement.attributes.hasOwnProperty("typehere")) return;
+  switch(e.key){
+    case "space":
+    case " ":
+      aplayer.toggle_play(e);
+      break;
+    case "P":
+    case "p":
+      aplayer.toggle_pause();
+      break;
+    case "L":
+    case "l":
+      aplayer.toggle_loop();
+    break;
+  }
+});
+
+// move to next tabindex item (borrowed from: https://stackoverflow.com/questions/7208161/focus-next-element-in-tab-index)
+function focusNextElement(direction) {
+  if (document.activeElement){
+    let current = allTabs.indexOf(document.activeElement);
+    if(allTabs[current].tabIndex > -1) {
+      if(current.tabIndex === 0 && direction === -1) direction = 0;
+      allTabs[current + direction].focus();
+    }
+  }
+}
+

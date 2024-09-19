@@ -11,7 +11,7 @@ players.midi = document.getElementById("mplayer");
 // set up the player object
 const aplayer = {
   play_status: false,
-  pause_status: true,
+  pause_status: false,
   loop_status: false,
   current_player: players.html,
   current_player_id: "html",
@@ -22,6 +22,9 @@ const aplayer = {
 aplayer.play_button = document.getElementById('play_button');
 aplayer.pause_button = document.getElementById('pause_button');
 aplayer.loop_button = document.getElementById('loop_button');
+aplayer.play_icon = document.getElementById('play_icon');
+aplayer.pause_icon = document.getElementById('pause_icon');
+aplayer.loop_icon = document.getElementById('loop_icon');
 aplayer.clip_length = document.getElementById('clip_length');
 aplayer.clip_progress = document.getElementById('clip_progress');
 aplayer.clip_filename = document.getElementById('clip_filename');
@@ -54,19 +57,18 @@ aplayer.midiNote = async (e) => {
    aplayer.set_progress(e.time);
 }
 
-aplayer.toggle_play = () => {
-  console.log("play clicked");
+aplayer.toggle_play = (e = {}, rewind = false) => {
   //if there's nothing loaded ignore and return
   if(this.current_player === null) return false;
-  //
+  // if the shift key is pressed while sending a play signal (button, space, enter), rewind
+  if(e.shiftKey) aplayer.rewind();
+  aplayer.play_icon.src = "icons/player-playing.svg";
+  aplayer.pause_icon.src = "icons/player-pause.svg";
+  aplayer.pause_status = false;
   if(aplayer.play_status){
-    (aplayer.current_player_id === "midi") ? aplayer.current_player.reload() : aplayer.current_player.load();
     aplayer.play();
   } else {
-    play_button.src = "icons/player-playing.svg";
-    aplayer.pause_button.src = "icons/player-pause.svg";
-    if(!aplayer.pause_status) 
-    aplayer.pause_status = false;
+    aplayer.play_status = true;
     aplayer.play() 
   }
 }
@@ -80,6 +82,7 @@ aplayer.rewind = () => {
 }
 
 aplayer.play = () => {
+  aplayer.play_icon.src = "icons/player-playing.svg";
   if(aplayer.current_player_id === "midi") { 
     aplayer.current_player.start();
   } else if (aplayer.current_player_id === "html"){
@@ -88,6 +91,7 @@ aplayer.play = () => {
 }
 
 aplayer.pause = () =>{
+  aplayer.pause_icon.src = "icons/player-paused.svg";
   if(aplayer.current_player_id === "midi") { 
     aplayer.current_player.stop();
   } else if (aplayer.current_player_id === "html"){
@@ -96,12 +100,19 @@ aplayer.pause = () =>{
 }
 
 aplayer.toggle_pause = () => {
-  console.log("pause clicked");
   // pause button clicked
-  play_button.src = "icons/player-play.svg";
+ if (aplayer.pause_status === false) {
+  console.log("pause clicked", aplayer.pause_status);
+  aplayer.play_icon.src = "icons/player-play.svg";
   aplayer.pause_status = true;
-  aplayer.pause_button.src = "icons/player-paused.svg";
+  aplayer.pause_icon.src = "icons/player-paused.svg";
   aplayer.pause() 
+ } else {
+  aplayer.play_icon.src = "icons/player-playing.svg";
+  aplayer.pause_icon.src = "icons/player-pause.svg";
+  aplayer.pause_status = false;
+  aplayer.play()
+ }
 }
 
 aplayer.toggle_loop = () => {
@@ -109,10 +120,10 @@ aplayer.toggle_loop = () => {
   // loop button clicked
   if(aplayer.loop_status) {
     aplayer.loop_status = false;
-    aplayer.loop_button.src = "icons/player-loop.svg";
+    aplayer.loop_icon.src = "icons/player-loop.svg";
   } else {
     aplayer.loop_status = true;
-    aplayer.loop_button.src = "icons/player-looping.svg";    
+    aplayer.loop_icon.src = "icons/player-looping.svg";    
   }
 }
 
@@ -121,16 +132,16 @@ aplayer.play_end = () => {
   console.log("ended");
   if(aplayer.current_player_id=="midi"){
     if(aplayer.current_player.duration > aplayer.current_player.currentTime) {
-      aplayer.toggle_pause();
+      aplayer.pause();
       return;
     }
   }
   if(aplayer.loop_status){
     // this may not work if reloading/rewinding is required
     // will need to test if they auto return to start on end
-    play_button.src = "icons/player-playing.svg";
+    aplayer.play_icon.src = "icons/player-playing.svg";
     aplayer.pause_status = false;
-    aplayer.pause_button.src = "icons/player-pause.svg";
+    aplayer.pause_icon.src = "icons/player-pause.svg";
     aplayer.play() 
   } else {
     aplayer.stop();
@@ -138,9 +149,9 @@ aplayer.play_end = () => {
 }
 
 aplayer.stop = () => {
-  aplayer.play_button.src = "icons/player-play.svg";
+  aplayer.play_icon.src = "icons/player-play.svg";
   aplayer.play_status = false;
-  aplayer.pause_button.src = "icons/player-pause.svg";
+  aplayer.pause_icon.src = "icons/player-pause.svg";
   aplayer.pause_status = false;
   aplayer.set_progress(0);
 }
@@ -196,7 +207,7 @@ aplayer.pause_button.addEventListener("click", aplayer.toggle_pause);
 //players.midi.player_callback = aplayer.midiEventHandler;
 players.html.addEventListener('ended', aplayer.play_end);
 players.html.addEventListener('durationchange', aplayer.set_duration);
-players.html.addEventListener('loadedmetadata', aplayer.set_duration);
+//players.html.addEventListener('loadedmetadata', aplayer.set_duration);
 players.html.addEventListener('timeupdate', aplayer.set_progress);
 players.midi.addEventListener('note', aplayer.set_progress);
 players.midi.addEventListener('stop', aplayer.play_end )
@@ -207,7 +218,21 @@ players.midi.addEventListener('load', aplayer.play);
 /* ----------- PICKER FUNCTIONALITY ------------- */
 
 async function playFile(e){
-  // get binary blob and determine mimetype
+
+  //skip it if the file currently playing is the selected file and shift is not selected
+  let parts = await Neutralino.filesystem.getPathParts(e.srcElement.attributes["picker-path"].value);
+  if ((aplayer.clip_filename.innerText === parts.filename) && !e.shiftKey && aplayer.play_status) return;
+
+  // just continue play if it's paused, no shift, and the same file
+  if ((aplayer.clip_filename.innerText === parts.filename) && !e.shiftKey && aplayer.pause_status) aplayer.play();
+
+  // BUTTON RESET (except loop)
+  aplayer.pause_status = false;
+  aplayer.play_status = false;
+  aplayer.play_icon,src = "icons/player-play.svg";
+  aplayer.pause_icon.src = "icons/player-pause.svg";
+
+  // get binary blob and determine mimetype based on file handle
   let filedata = await Neutralino.filesystem.readBinaryFile(e.srcElement.attributes["picker-path"].value);
   let mimepre = SOUNDEXT.indexOf(e.srcElement.attributes["picker-type"].value);
   let mimeType = SOUNDMIME[mimepre];
@@ -215,7 +240,6 @@ async function playFile(e){
   //turn binary blob and mime type into a data URI
   let dataURI = await convertAudio(filedata, mimeType);
 
-  //let xwatch = await aplayer.blankPlayers();
   if(mimeType == "midi") {    
     aplayer.current_player = players.midi;
     aplayer.current_player_id = "midi";
@@ -225,12 +249,9 @@ async function playFile(e){
   }
 
   // set the file name
-  let parts = await Neutralino.filesystem.getPathParts(e.srcElement.attributes["picker-path"].value);
   aplayer.clip_filename.innerText = parts.filename;
-
   aplayer.current_player.src = dataURI;
-  aplayer.toggle_play();
-  aplayer.play();
+  aplayer.toggle_play(e);
 }
 
 

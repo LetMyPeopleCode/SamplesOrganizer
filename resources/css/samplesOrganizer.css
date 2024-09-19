@@ -142,4 +142,28 @@ html, body, .container, .container-fluid {
   display:block;
   margin-left: 20px;
   margin-right: 20px;
+  white-space: nowrap;
+}
+
+button {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  /*optional*/
+  font-family: arial, sans-serif;
+  /*input has OS specific font-family*/
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.fpbutton {
+  background-color: royalblue !important;
+  padding: 2px !important;
+  color: whitesmoke' 
+}
+
+.filename {
+  background-color: none !important;
+  
 }

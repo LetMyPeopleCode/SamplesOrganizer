@@ -104,7 +104,7 @@
 <div class="row">
   <div class="fp-wrapper col-5">
     <!-- FILE PICKER -->
-    <div class="fptop"><button type="button" class="btn btn-primary" id="fp-open">Open a samples folder</button>  <a class="navbar-brand" href="#" data-bs-toggle="modal" data-bs-target="#browseHelpModal"><img src="icons/question.png" height="32" alt="SamplesOrganizer Logo" data-bs-toggle="tooltip" data-bs-title="Folder Selector Help"></a></div>
+    <div class="fptop"><button type="button" class="btn btn-primary fpbutton" id="fp-open">Open a samples folder</button>  <a class="navbar-brand" href="#" data-bs-toggle="modal" data-bs-target="#browseHelpModal"><img src="icons/question.png" height="32" alt="SamplesOrganizer Logo" data-bs-toggle="tooltip" data-bs-title="Folder Selector Help"></a></div>
     <div class="filepicker" id="filepicker">
     </div>  
   </div>
@@ -124,7 +124,7 @@
           <midi-player src="" class="midiplayer" hidden id="mplayer"></midi-player>
 </midi-player>
           <div id="player-controls">
-            <img src="icons/player-play.svg" class="playerbutton" id="play_button" data-bs-toggle="tooltip" data-bs-title="PLAY start/stop"> &nbsp; <img src="icons/player-pause.svg" class="playerbutton" id="pause_button" data-bs-toggle="tooltip" data-bs-title="PAUSE on/off"> &nbsp; <img src="icons/player-loop.svg" class="playerbutton" id="loop_button" data-bs-toggle="tooltip" data-bs-title="LOOP on/off"> &nbsp; <span id="clip_progress" class="playtime">0:00</span> / <span id="clip_length" class="playtime">0:00</span><br><span id="clip_filename" class="clip_file">No file selected</span>
+            <button id="play_button" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="PLAY (space)<br>RESTART (shift + space)"><img src="icons/player-play.svg" class="playerbutton" id="play_icon"></button> &nbsp; <button id="pause_button" data-bs-toggle="tooltip" data-bs-title="PAUSE on/off (P)"><img src="icons/player-pause.svg" class="playerbutton" id="pause_icon"></button> &nbsp; <button  id="loop_button" data-bs-toggle="tooltip" data-bs-title="LOOP on/off (L)"><img src="icons/player-loop.svg" class="playerbutton" id="loop_icon"></button> &nbsp; <span id="clip_progress" class="playtime">0:00</span> / <span id="clip_length" class="playtime">0:00</span><br><span id="clip_filename" class="clip_file">No file selected</span>
           </div>
         </div>
       </div>
