@@ -12,12 +12,9 @@ async function main(){
     Neutralino.app.exit();
   }
 
-  // Initialize Neutralino
   var fpicker = document.getElementById('filepicker');
   fixFpick();
   var haudio = document.getElementById('haudio');
-
-
 
   // Establish datapath
   const data_path = await UTILS.getDataDir();
@@ -174,7 +171,7 @@ async function main(){
   fpicker.addEventListener("keydown",(e)=>{
   if(e.key == "Enter"){
     if(e.target.className.includes("filename")){
-      playFile(e);
+      aplayer.toggle_play(e);
     }
   }
   if(e.key == "ArrowDown" || e.key == "ArrowUp"){

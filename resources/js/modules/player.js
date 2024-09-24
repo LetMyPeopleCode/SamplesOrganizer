@@ -91,6 +91,7 @@ aplayer.toggle_play = (e = {}, rewind = false) => {
   if(e.shiftKey) {
     console.log("rewinding");
     aplayer.rewind();
+    return;
   }
   aplayer.play_icon.src = "icons/player-playing.svg";
   aplayer.pause_icon.src = "icons/player-pause.svg";
@@ -105,7 +106,8 @@ aplayer.toggle_play = (e = {}, rewind = false) => {
 
 aplayer.rewind = () => {
   if(aplayer.current_player_id === "html"){
-    aplayer.current_player.stop()     
+    aplayer.current_player.stop();
+    aplayer.current_player.play();     
   } else if (aplayer.current_player_id === "midi"){
     aplayer.current_player.reload();
   }
