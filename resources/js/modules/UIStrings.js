@@ -1,1 +1,1 @@
-/* nothing to see here - this is for localization when we get that far */
+/* nothing to see here - this is for localization if/when we get that far */

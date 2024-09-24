@@ -68,11 +68,52 @@
   </div>
 </div>
 <!-- END MODAL-->
+<!-- ------------------------------------------------------------------- -->
+<!--                       SPLASH SCREEN                                 --> 
+<!-- ------------------------------------------------------------------- -->
+
+<div id="splash_screen" class="container-fluid" style="z-index: 500;" hidden>
+  <h1>Splash</h1>
 
 
-<div id="splash_screen" class="container-fluid"><h1>Splash</h1></div>
+
+</div>
+<!-- ------------------------------------------------------------------- -->
+<!--                          T&C SCREEN                                 --> 
+<!-- ------------------------------------------------------------------- -->
+<!-- This shows and can only be dismissed by accepting the terms or quit -->
+<div id="termsandconditions" class="container-fluid" hidden>
+  <h1>SamplesOrganizer: Terms and Conditions</h1>
+
+  <div id="tandc"><p><b>THE SOFTWARE YOU ARE ABOUT TO USE IS FREE AND OPEN SOURCE. BY USING IT (CHOOSING THE AGREE BUTTON BELOW, DISMISSING THIS SCREEN BY OTHER MEANS, OR ATTEMPTING TO CIRCUMVENT THIS SCREEN), YOU AGREE TO THE FOLLOWING PROVISIONS.</b></p>
+
+  <p><b>1</b>: You agree to the licenses of this software and the open source components it uses (all either Apache 2.0 or MIT),</p>
+  <p><b>2</b>: <b>NO WARRANTY</b> - this software is provided without warranty that it will work or will work as you or anyone else expects. You agree to hold the authors of this software harmless for any wanted or unwanted changes or damages it might cause.</p>
+
+  <p><b>WHAT WE BELIEVE IT DOES</b>: Here is a list of the changes to or access to your system and files we expect this software to make or use. It is provided by the authors on a "best estimate" basis that you agree cannot be used to hold the authors or distributors of this software liable for anything it does or does not do.</p>
+  <ul>
+    <li><b>Can read files in your app data folder as specified by your operating system.</b> This app utilizes the Neutralino.OS API to query your operating system for the correct place to store application data.</li>
+    <li><b>Can write files in your app data folder as specified by your operating system.</b> Once it has determined the location of your application data folder, it can create a subfolder for itself in that folder and store configuration and other information for the application (such as its database) there.</li>
+    <li><b>Stores Database Information Unencrypted</b>: To the best of our knowledge, the database we use stores file names, paths, license information, your comments, and the tags you assign as JSON formatted plain text. Since this database does not store passwords or anything we consider PII, we have chosen not to encrypt the database files to allow for greater efficiency. That means if anyone gets access to your app data folder, they can read the contents of your samples database. If you're really concerned that someone will be able to abuse the knowledge you categorized "70sfunk_drumloop.wav" as "funky," then you'll need to use something else or wait until we start enabling/using encryption on the database. <i>Please Note</i> if you're using disk or folder encryption tools of your own, this will not override that. It just doesn't do its own encryption.</li>
+    <li><b>Can read files in folders you specify.</b> When you choose a folder to browse, the application can read a listing of the contents of that folder and all of its subfolders to find files it is capable of using for playing and indexing your collection. It can furthermore read those files in that directory and subdirectory for the purposes of playing and gathering needed data for/about your samples.</li>
+    <li><b>Launch a server.</b> As part of the Neutralino framework, OS-based APIs like accessing the file system are provided through a local websocket server. We cannot guarantee this sever is 100% secure as it's a product of the Neutralino framework. If you are highly security conscious, subscribe to Neutralino's mailing lists or forums to get security alerts about this component.</li>
+  </ul>
+
+  <p><b>WHAT WE BELIEVE IT DOESN'T DO</b>: The list of things it doesn't do could be infinite (e.g. "does not change the gravitational constant of the solar system"). So this is a list of the items we believe users would be concerned about. Furthermore we may be wrong. While we are not aware of our own original code doing anything we disclaim below, this is built with multiple open source components and you agree to hold us harmless if those components do anything you or we didn't expect.</p>
+  <ul>
+    <li><b>Does not share personal information or system information.</b> This app does not gather or share personal or identifying information about you, your system, or its contents. For now it is intended as a wholly offline application that does not access any remote servers for any operations.</li>
+    <li><b>Does not auto-update.</b> As part of the wholly offline operation, we have yet to implement online checks that the app has an update available or needs an update. While this is a feature we intend to add at a later date, during the beta period, it is not guaranteed to be implemented or work. After it is implemented, it remains subject to the "NO WARRANTY" provision.</li>
+  </ul>
+
+  <p>Basically, this software was created and shared for free by developers who wanted this application to exist or wanted to make it better. You can review all the source code at our <a href="#" class="repoclick">Github repository</a>. If you do not have the skills to do it, you can hire your own expert to review it. You agree not to run this software unless you believe you understand and are ready to accept the risks and hold the creators and contributors harmless for any and all behaviors you believe it exhibite or fails to exhibit.</p>
+</div>
+<p style="text-align: center;"><button id="tcagree" class="btn tnc">I agree</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button id="tcno" class="btn tnc">I do not agree</button></p>
+</div>
+
 <div id="main_app" class="container-fluid" hidden>
-<!-- TOP NAVIGATION BAR-->
+<!-- ------------------------------------------------------------------- -->
+<!--                      TOP NAVIGATION                                 --> 
+<!-- ------------------------------------------------------------------- -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><img src="icons/logo_64.png" height="40" alt="SamplesOrganizer Logo" data-bs-toggle="tooltip" data-bs-title="About this app"></a>
@@ -99,11 +140,13 @@
 </nav>
 <!-- END TOP NAV-->
 
-<!-- Browse Screen-->
-  <div id="browse_screen" class="container-fluid full-height main-app row">
+<!-- ------------------------------------------------------------------- -->
+<!--                       BROWSE SCREEN                                 --> 
+<!-- ------------------------------------------------------------------- -->
+<div id="browse_screen" class="container-fluid full-height main-app row" >
 <div class="row">
   <div class="fp-wrapper col-5">
-    <!-- FILE PICKER -->
+<!--                        FILE PICKER                                  --> 
     <div class="fptop"><button type="button" class="btn btn-primary fpbutton" id="fp-open">Open a samples folder</button>  <a class="navbar-brand" href="#" data-bs-toggle="modal" data-bs-target="#browseHelpModal"><img src="icons/question.png" height="32" alt="SamplesOrganizer Logo" data-bs-toggle="tooltip" data-bs-title="Folder Selector Help"></a></div>
     <div class="filepicker" id="filepicker">
     </div>  
@@ -111,11 +154,13 @@
   <div class="col-7 br browse-col2">
     <div class="row browse-inner br" >
       <div class = "col-6 maxit br">
+<!--                        FILE INFO FORM                               --> 
         <div class = "br maxit">Fileinfo</div>
-      </div>
-      <div class = "col-6 maxit br">
+        </div>
+<div class = "col-6 maxit br">
+<!--                              TAGS                                   --> 
         <div class = "br maxit">tags</div>
-      </div>
+        </div>
     </div>
     <div class="row">
       <div class="col-12 br player">
@@ -124,7 +169,7 @@
           <midi-player src="" class="midiplayer" hidden id="mplayer"></midi-player>
 </midi-player>
           <div id="player-controls">
-            <button id="play_button" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="PLAY (space)<br>RESTART (shift + space)"><img src="icons/player-play.svg" class="playerbutton" id="play_icon"></button> &nbsp; <button id="pause_button" data-bs-toggle="tooltip" data-bs-title="PAUSE on/off (P)"><img src="icons/player-pause.svg" class="playerbutton" id="pause_icon"></button> &nbsp; <button  id="loop_button" data-bs-toggle="tooltip" data-bs-title="LOOP on/off (L)"><img src="icons/player-loop.svg" class="playerbutton" id="loop_icon"></button> &nbsp; <span id="clip_progress" class="playtime">0:00</span> / <span id="clip_length" class="playtime">0:00</span><br><span id="clip_filename" class="clip_file">No file selected</span>
+            <button id="play_button" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="PLAY on/off (space)<br>RESTART (shift + PLAY)"><img src="icons/player-play.svg" class="playerbutton" id="play_icon"></button> &nbsp; <button id="pause_button" data-bs-toggle="tooltip" data-bs-title="PAUSE on/off (P)"><img src="icons/player-pause.svg" class="playerbutton" id="pause_icon"></button> &nbsp; <button  id="loop_button" data-bs-toggle="tooltip" data-bs-title="LOOP on/off (L)"><img src="icons/player-loop.svg" class="playerbutton" id="loop_icon"></button> &nbsp; <span id="clip_progress" class="playtime">0:00</span> / <span id="clip_length" class="playtime">0:00</span><br><span id="clip_filename" class="clip_file">No file selected</span>
           </div>
         </div>
       </div>
@@ -132,14 +177,22 @@
   </div>
 </div>
 
-<!-- Search Screen-->
-  <div id="search_screen" class=".container-fluid" hidden>
+<!-- ------------------------------------------------------------------- -->
+<!--                       SEARCH SCREEN                                 --> 
+<!-- ------------------------------------------------------------------- -->
+<div id="search_screen" class=".container-fluid" hidden>
     <h1>Search</h1>
   </div>
+<!-- ------------------------------------------------------------------- -->
+<!--                      SETTINGS SCREEN                                --> 
+<!-- ------------------------------------------------------------------- -->
   <div id="settings_screen" class=".container-fluid" hidden>
     <h1>Settings</h1>
   </div>
-  <div id="help_screen" class=".container-fluid" hidden>
+<!-- ------------------------------------------------------------------- -->
+<!--                        HELP SCREEN                                  --> 
+<!-- ------------------------------------------------------------------- -->
+<div id="help_screen" class=".container-fluid" hidden>
     <h1>Help</h1>
   </div>
 
@@ -157,19 +210,21 @@
     <script src="js/external/popper.min.js"></script>
     <script src="js/external/bootstrap.bundle.min.js"></script>
     <script src="js/external/lokijs.js"></script>
+    <script src="js/external/howler.min.js"></script>
     <script src="js/external/html-midi-player.js"></script>
     <script src="js/modules/constants.js"></script>
     <script src="js/modules/UIStrings.js"></script>
+    <script src="js/modules/model.js"></script>   
     <script src="js/modules/utils.js"></script>
     <script src="js/modules/player.js"></script>
     <script src="js/main.js"></script>
     <script>
-      console.log("going");
+        // wait for onload to fire, then run launch function
+      document.getElementById('tcagree').addEventListener('click',UTILS.tcagree);
+      document.getElementById('tcno').addEventListener('click',UTILS.tcno);
       window.onload = function(){
-        setTimeout(function(){
-          document.getElementById("splash_screen").setAttribute("hidden","hidden");
-          document.getElementById("main_app").removeAttribute("hidden");
-        }, 1000);
+        Neutralino.init();
+        UTILS.launch();
       }
     </script>
 </html>

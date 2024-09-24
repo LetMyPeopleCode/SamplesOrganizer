@@ -2,8 +2,22 @@
 
 // set up the audio players as their own object
 const players = {}
-players.html = document.getElementById("hplayer");
+//players.html = document.getElementById("hplayer");
+// shim to let howler get new sources
+Howl.prototype.changeSrc = function(newSrc) {
+      var self = this;
+      self.unload(true);
+      self._duration = 0;
+      self._sprite = {};
+      self._src = newSrc;
+      self.load();
+}
+
+players.html = new Howl({src:['demo/ringtone.mp3']});
 players.midi = document.getElementById("mplayer");
+players.html.on('load', (e) =>{
+  aplayer.set_duration();
+});
 
 //map functions to common method names
 //players.midi.play = function(){players.midi.start();}
@@ -13,6 +27,7 @@ const aplayer = {
   play_status: false,
   pause_status: false,
   loop_status: false,
+  autoplay: true,
   current_player: players.html,
   current_player_id: "html",
   current_duration: 0, // the actual duration
@@ -28,6 +43,8 @@ aplayer.loop_icon = document.getElementById('loop_icon');
 aplayer.clip_length = document.getElementById('clip_length');
 aplayer.clip_progress = document.getElementById('clip_progress');
 aplayer.clip_filename = document.getElementById('clip_filename');
+  // fires once
+  aplayer.clip_filename.innerText = "DEFAULT FILE: ringtone.mp3"
 
 
 // aplayer statuses use false for off and true for on
@@ -43,6 +60,20 @@ aplayer.clip_filename = document.getElementById('clip_filename');
     length: property - "duration" - (int in seconds);
     progress: event - "timeupdate" - val: current_player.currentTime - float in ms
 
+  howler: (Howler Player)
+    autoplay: autoplay - property - boolean
+    paused: property - "paused" - boolean
+    play: method - play();
+    seek: method - seek(id, seconds) - without options, returns progress in currently playing item
+    rewind/loop: method - load();
+    pause: method - pause();
+    unpause: method - pause??();
+    EVENTS: onload, onplay, *onend*, onpause, onstop, 
+      - need play to trigger a setInterval or use Request Animation Frame. With RAF method it would query the player every XXX milliseconds and update the time only if it's playing.  
+
+    length: method - "duration(id)" - ID is ID of currently playing sound, without it will give duration of all queued sounds - (int in seconds);
+    progress: event - "timeupdate" - val: current_player.currentTime - float in ms
+
   midi player: (https://github.com/cifkao/html-midi-player/tree/master)
     play: method - start();
     pause/stop: method - stop();
@@ -52,33 +83,33 @@ aplayer.clip_filename = document.getElementById('clip_filename');
     progress: event - "note" - val: current_player.currentTime - float in ms?
     */
 
-aplayer.midiNote = async (e) => {
-   let myprog
-   aplayer.set_progress(e.time);
-}
 
 aplayer.toggle_play = (e = {}, rewind = false) => {
   //if there's nothing loaded ignore and return
   if(this.current_player === null) return false;
   // if the shift key is pressed while sending a play signal (button, space, enter), rewind
-  if(e.shiftKey) aplayer.rewind();
+  if(e.shiftKey) {
+    console.log("rewinding");
+    aplayer.rewind();
+  }
   aplayer.play_icon.src = "icons/player-playing.svg";
   aplayer.pause_icon.src = "icons/player-pause.svg";
   aplayer.pause_status = false;
   if(aplayer.play_status){
-    aplayer.play();
+    aplayer.toggle_pause();
   } else {
     aplayer.play_status = true;
-    aplayer.play() 
+    aplayer.play();
   }
 }
 
 aplayer.rewind = () => {
   if(aplayer.current_player_id === "html"){
-    aplayer.current_player.load()     
+    aplayer.current_player.stop()     
   } else if (aplayer.current_player_id === "midi"){
     aplayer.current_player.reload();
   }
+  return;
 }
 
 aplayer.play = () => {
@@ -86,11 +117,15 @@ aplayer.play = () => {
   if(aplayer.current_player_id === "midi") { 
     aplayer.current_player.start();
   } else if (aplayer.current_player_id === "html"){
+    console.log("aplayer play")
+    aplayer.play_status = true;
     aplayer.current_player.play();
+    requestAnimationFrame(howlerUpdate);
   }
 }
 
 aplayer.pause = () =>{
+  aplayer.play_status = false;
   aplayer.pause_icon.src = "icons/player-paused.svg";
   if(aplayer.current_player_id === "midi") { 
     aplayer.current_player.stop();
@@ -102,7 +137,6 @@ aplayer.pause = () =>{
 aplayer.toggle_pause = () => {
   // pause button clicked
  if (aplayer.pause_status === false) {
-  console.log("pause clicked", aplayer.pause_status);
   aplayer.play_icon.src = "icons/player-play.svg";
   aplayer.pause_status = true;
   aplayer.pause_icon.src = "icons/player-paused.svg";
@@ -131,7 +165,7 @@ aplayer.play_end = () => {
   // do this when the playback completes
   console.log("ended");
   if(aplayer.current_player_id=="midi"){
-    if(aplayer.current_player.duration > aplayer.current_player.currentTime) {
+    if(aplayer.duration > aplayer.current_player.currentTime) {
       aplayer.pause();
       return;
     }
@@ -165,7 +199,9 @@ aplayer.set_duration = async () => {
   if(aplayer.current_player_id === "midi") {
     mytime = await aplayer.current_player.duration;
   } else {
-    mytime = await aplayer.current_player.duration;
+    mytime = await aplayer.current_player.duration(0);
+    // changing the song doesn't change the duration internally, so it stops early or late
+    aplayer.current_player._duration = mytime;
   }
   console.log("mytime", mytime)
   if(mytime < 1) mytime = 1;
@@ -175,8 +211,16 @@ aplayer.set_duration = async () => {
 }
 
 aplayer.set_progress = async (e) => {
-  // update to min/sec and add to progress box 
-  aplayer.clip_progress.innerText = makeTimeString(aplayer.current_player.currentTime);
+  let current_time = 0;
+  switch(typeof e){
+    case("number"):
+      current_time = e;
+      break;
+    default:
+      current_time = aplayer.current_player.currentTime;
+  }
+
+  aplayer.clip_progress.innerText = makeTimeString(current_time);
 }
 
 aplayer.blankPlayers = async () => {
@@ -204,20 +248,38 @@ aplayer.loop_button.addEventListener("click", aplayer.toggle_loop);
 aplayer.pause_button.addEventListener("click", aplayer.toggle_pause);
 
 //player events
-//players.midi.player_callback = aplayer.midiEventHandler;
-players.html.addEventListener('ended', aplayer.play_end);
-players.html.addEventListener('durationchange', aplayer.set_duration);
-//players.html.addEventListener('loadedmetadata', aplayer.set_duration);
-players.html.addEventListener('timeupdate', aplayer.set_progress);
+players.midi.player_callback = aplayer.midiEventHandler;
+players.html.on('end', aplayer.play_end);
 players.midi.addEventListener('note', aplayer.set_progress);
 players.midi.addEventListener('stop', aplayer.play_end )
 players.midi.addEventListener('start', aplayer.set_duration);
 players.midi.addEventListener('load', aplayer.play);
 
+let count = 0;
+// html player has no progress event
+// therefore this is started by play and stopped by pause
+// originally thought of leaving it running all the time, but
+// that could mess with midi progress
+function howlerUpdate() {
+    // quit immediately if the player isn't currently playing
+    if(aplayer.play_status){
+//      console.log("hupdate", players.html.seek())
+      aplayer.set_progress(players.html.seek());
+      requestAnimationFrame(howlerUpdate);
+    } else {
+      //end the loop by doing bupkis
+    }
+}
+
+
+
+
+
 
 /* ----------- PICKER FUNCTIONALITY ------------- */
 
 async function playFile(e){
+  //console.dir(players.html);
 
   //skip it if the file currently playing is the selected file and shift is not selected
   let parts = await Neutralino.filesystem.getPathParts(e.srcElement.attributes["picker-path"].value);
@@ -246,12 +308,15 @@ async function playFile(e){
   } else {
     aplayer.current_player = players.html;
     aplayer.current_player_id = "html";
-  }
+ //   players.html.unload();
+    apnow = false;
+    players.html.changeSrc([dataURI]);
+    }
 
   // set the file name
+  if(aplayer.autoplay) aplayer.play();
   aplayer.clip_filename.innerText = parts.filename;
-  aplayer.current_player.src = dataURI;
-  aplayer.toggle_play(e);
+  aplayer.set_duration()
 }
 
 
