@@ -34,10 +34,12 @@
   "modes": {
     "window": {
       "title": "SamplesOrganizer",
-      "width": 1024,
-      "height": 724,
-      "minWidth": 640,
-      "minHeight": 480,
+      "width": 11000,
+      "height": 800,
+      "minWidth": 1100,
+      "minHeight": 800,
+      "maxWidth": 1100,
+      "maxHeight": 800,
       "center": true,
       "fullScreen": false,
       "alwaysOnTop": false,
@@ -46,7 +48,7 @@
       "borderless": false,
       "maximize": false,
       "hidden": false,
-      "resizable": true,
+      "resizable": false,
       "exitProcessOnClose": false
     },
     "browser": {

@@ -3,7 +3,7 @@
 
 // wrapping the main in an async function so it can await initialization data
 async function main(){
-  console.trace();
+
   //neutralino general code from sample
   /*    
   Function to handle the window close event by gracefully exiting the Neutralino application.
@@ -127,7 +127,7 @@ async function main(){
   // Populate the picker
   async function populatePickerController(folderChoice){
     let fs = Neutralino.filesystem;
-    let pathinfo;
+    let pathinfo = null;
     // validate that the path passed is a directory
     try{
     pathinfo = await Neutralino.filesystem.getStats(folderChoice);
@@ -141,7 +141,14 @@ async function main(){
     //read the files in the directory and all its subs
     let files = await fs.readDirectory(folderChoice, {recursive: true});
     //send them off for sorting (returns list of file objects)
-    files = await sortFiles(files);
+    let maxobjs = 5000; //MAX FILE OBJECTS: truncate array to this length if higher
+    if (files.length > 5000) { 
+      UTILS.errorModal(`For performance reasons, we only process the first ${maxobjs} objects returned from reading a folder and its subfolders. The directory chosen has more children/grandchild/etc and will be truncated to ${maxobjs} entries. Entries may not be sound files, so it's possible far fewer will be populated for browsing.`);
+      files.length = maxobjs;
+    }
+    console.log("parsing results");
+    files = await filedata.parseFiles(files);
+    console.log("files", files)
     let fileshtml = "";
     let counter = 0;
     while (files.length < 1 && counter < 5){
@@ -151,9 +158,16 @@ async function main(){
 
     let ti = 20;
     
+    counter = 0;
+    while ((files[0].bpm === undefined) && counter < 50){
+       let strong = await UTILS.sleep(250);
+       counter++;
+     }
+
     files.forEach((fileinfo) => {
       ti+=1;
-      fileshtml += `<button picker-path="${fileinfo.filepath}" picker-type="${fileinfo.filetype}" class="filename buttonlist" tabindex=${ti} >${fileinfo.filename}</button><br>`;
+        // do we need to sanitize names/paths/etc?
+      fileshtml += `<button picker-path="${fileinfo.filepath}" picker-type="${fileinfo.filetype}" picker-license="${fileinfo.licenses}" picker-bpm="${fileinfo.bpm}" class="filename buttonlist" tabindex=${ti} >${fileinfo.filename}</button><br>`;
     });
     fpicker.innerHTML = fileshtml;
     new bootstrap.Tooltip("body", {
@@ -185,23 +199,15 @@ async function main(){
   }
   });
 
-  // Sort through files before they populate into the picker returning ONLY the sounds
-    // file entries come in entry (file name), path, and type values.
-  async function sortFiles(files){
-    let sorted = [];
-    files.forEach( async function(filedata){
-      // throw out everything that's not a file;
-      if(filedata.type !== "FILE") return;
-      let parts = await Neutralino.filesystem.getPathParts(filedata.path);
-      if(SOUNDEXT.indexOf(parts.extension) >= 0) sorted.push({"filepath": filedata.path, "filename": parts.filename, "filetype":parts.extension});
-    });
-    return sorted;
-  }
 
 
-  // establish keyboard controls
+  // establish keyboard controls for player
   document.addEventListener("keydown", (e)=>{
     if(document.activeElement.attributes.hasOwnProperty("typehere")) return;
+    e.preventDefault();
+    //speed browsing
+    //if(document.)
+    //if(e.key ==)
     switch(e.key){
       case "space":
       case " ":
@@ -218,6 +224,9 @@ async function main(){
     }
   });
 
+  
+
+
   // move to next tabindex item (borrowed from: https://stackoverflow.com/questions/7208161/focus-next-element-in-tab-index)
   function focusNextElement(direction) {
     if (document.activeElement){
@@ -228,6 +237,23 @@ async function main(){
       }
     }
   }
+
+  document.getElementById('addtagbox').addEventListener('keydown', (e) => {
+    if(!(/[a-z]|[0-9]|-| |\.|_/.test(e.key))){
+      e.preventDefault();
+    }
+    if(/^[A-Z]+$/.test(e.key)){
+      e.target.value = e.target.value + e.key.toLowerCase(); 
+    }
+    if(e.key = "Enter"){
+      console.log("ENTER");
+    }
+  })
+
+  
+
+
+
 }
 
 main();

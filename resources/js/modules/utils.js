@@ -1,5 +1,4 @@
 const UTILS = {};
-const MYDB = new LocalDb();
 var data_path ='';
 
 UTILS.errorModal = function(errorMsg){

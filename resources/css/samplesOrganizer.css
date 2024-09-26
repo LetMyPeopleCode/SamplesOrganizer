@@ -1,3 +1,4 @@
+
 /* Content Divs are different screens
    #splash: the splash screen, shows and then goes away when loading is finished (or after x seconds)
    #content1: The main samples browsing and organization screen
@@ -89,7 +90,7 @@ html, body, .container, .container-fluid {
   background-color: #CCD;
   border: 1px solid #000;
   overflow: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   white-space: nowrap;
 }
@@ -186,4 +187,26 @@ html, body, .container, .container-fluid {
   overflow-wrap: normal;
   overflow-x: none;
   overflow-y: scroll;
+}
+
+.taglist {
+  height: 180px;
+  max-height:180px;
+  min-height:180px;
+  margin: 0px;
+  padding: 2px;
+  border: 1pt solid #000;
+  background-color: #DDEEDD;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+#formcomments {
+  resize: none; 
+  border:1pt solid #000;
+  background-color: #efd;
+}
+
+input {
+  background-color: #EFd;
 }

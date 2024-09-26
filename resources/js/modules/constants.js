@@ -8,8 +8,11 @@ const APPVERSION = {
 
 //sound extensions this knows how to handle
 // .mid and a few others to be added as we can find libraries to handle them
-const SOUNDEXT = [".aac", ".mp3", ".mp4", ".wav", ".ogg", ".webm", ".3gpp", ".3gpp2",".mid",".m4a"];
-const SOUNDMIME = ["aac", "mpeg", "mp4", "wav", "ogg", "webm", "3gpp", "3gpp2", "midi", "m4a" ]
+const SOUNDEXT = [".aac", ".mp3", ".mp4", ".wav", ".ogg", ".webm", ".3gpp", ".3gpp2",".mid",".m4a", ".flac", ".oga", ".caf", ".opus",".weba"];
+
+const SOUNDMIME = ["aac", "mpeg", "mp4", "wav", "ogg", "webm", "3gpp", "3gpp2", "midi", "m4a", "flac", "ogg", "x-caf", "dolby", "ogg", "webm" ]
 
 
 const STARTUP_TAGS = ["skipped","liked","rock","soul","jazz","edm","chill","trap","house"];
+
+const OPS_DATA = {};

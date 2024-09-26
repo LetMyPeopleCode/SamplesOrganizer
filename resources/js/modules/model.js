@@ -45,11 +45,38 @@ class LocalDb {
       }
       // creation didn't fail, so let's get it
       self.tags = await self.db.getCollection("samples");
+      //todo add some basic tags
+
     } 
     console.log("tags loaded")
     UTILS.goLive();
   }
-  
+
+  //TODO ADD DATABASE REGULAR FUNCTIONS
+
+  async addTag(tag) {
+    // check if tag exists, if not, add it
+
+  }
+
+  async addFile(fileinfo){
+    // check if file exists, if not add it, else update
+
+
+  }
+
+  async getFile(filepath){
+
+
+  }
+
+  async getAllTags(){
+    // returns all the recorded tags as an array
+
+
+
+  }
+
 
 
 }
@@ -123,16 +150,4 @@ class LokiFSAdapter {
 }
 
 
-
-
-
-
-/* ============================= 
-
-  Loki Tests
-  Let's make sure it works like I expect
-
-  Okay, it works, but we're going to have to do a little magic to wait for the first loading of the DB
-
-
- ============================== */
+const MYDB = new LocalDb();
