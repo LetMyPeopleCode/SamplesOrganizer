@@ -77,8 +77,8 @@ async function main(){
   // START APP CODE
 
   // START screen switching
-  const nav_buttons = ["browse_top","search_top","settings_top","help_top"];
-  const nav_screens = ["browse_screen","search_screen","settings_screen","help_screen"];
+  const nav_buttons = ["browse_top","search_top","settings_top"];
+  const nav_screens = ["browse_screen","search_screen","settings_screen"];
   nav_buttons.forEach((element) => {
     document.getElementById(element).addEventListener("click",toggleScreens)
   })
@@ -114,7 +114,6 @@ async function main(){
   //Get User Selection from button
   async function getFolderChoice(e){
     var caller = e.target || e.srcElement;
-    console.log( caller );
     let folderChoice = await Neutralino.os.showFolderDialog(
       "Select folder to scan for sound files"
     );
@@ -139,19 +138,19 @@ async function main(){
       return false;
     }
     //read the files in the directory and all its subs
-    let files = await fs.readDirectory(folderChoice, {recursive: true});
+    let rawfiles = await fs.readDirectory(folderChoice, {recursive: true});
     //send them off for sorting (returns list of file objects)
-    let maxobjs = 5000; //MAX FILE OBJECTS: truncate array to this length if higher
-    if (files.length > 5000) { 
-      UTILS.errorModal(`For performance reasons, we only process the first ${maxobjs} objects returned from reading a folder and its subfolders. The directory chosen has more children/grandchild/etc and will be truncated to ${maxobjs} entries. Entries may not be sound files, so it's possible far fewer will be populated for browsing.`);
-      files.length = maxobjs;
+  //MAX FILE OBJECTS: truncate array to this length if higher
+    if (rawfiles.length > 5000) { 
+      UTILS.errorModal(`For performance reasons, we only process the first ${MAXOBJS} entries returned from reading a folder and its subfolders. Entries can be any file or subdirectory. The directory chosen has more entries in it and/or it's subdirectories than that and will be truncated to ${MAXOBJS} entries. Entries may not be sound files, so it's possible far fewer sounds than the maximum object amount will be populated for browsing.`);
+      rawfiles.length = MAXOBJS;
     }
-    console.log("parsing results");
-    files = await filedata.parseFiles(files);
-    console.log("files", files)
+    let files = await filedata.parseFiles(rawfiles);
     let fileshtml = "";
     let counter = 0;
+/*
     while (files.length < 1 && counter < 5){
+      console.log("waiting for filedata", files.length);
       let strong = await UTILS.sleep(250);
       counter++;
     }
@@ -159,16 +158,32 @@ async function main(){
     let ti = 20;
     
     counter = 0;
-    while ((files[0].bpm === undefined) && counter < 50){
+    while ((files[0].tagslength === 0) && counter < 50){
+       console.log("waiting for tags")
        let strong = await UTILS.sleep(250);
        counter++;
      }
+*/
 
-    files.forEach((fileinfo) => {
+    let ti = 20;
+    filedata.currentSet = {};
+    filedata.currentguid = null;
+    filedata.clearForm();
+    for (n in files) {
+      let fileguid = await UTILS.quickGuid();
+      //prevent collisions (despite a 1 in 74 quadrillion chance) Error message is just for fun.
+      while(filedata.currentSet[fileguid]){
+        UTILS.errorModal(`There was a rare collision on ID ${fileguid}, but we're fixing it.`)
+        fileguid = await UTILS.quickGuid();
+      }
+      let fileinfo = files[n];
       ti+=1;
+      filedata.currentSet[fileguid] = fileinfo;
+      //let tags = await JSON.stringify(fileinfo.tags);
         // do we need to sanitize names/paths/etc?
-      fileshtml += `<button picker-path="${fileinfo.filepath}" picker-type="${fileinfo.filetype}" picker-license="${fileinfo.licenses}" picker-bpm="${fileinfo.bpm}" class="filename buttonlist" tabindex=${ti} >${fileinfo.filename}</button><br>`;
-    });
+      fileshtml += `<button picker-path="${fileinfo.filepath}" picker-type="${fileinfo.filetype}" picker-guid="${fileguid}" class="filename buttonlist" tabindex="${ti}">${fileinfo.filename}</button><br>`;
+    }
+
     fpicker.innerHTML = fileshtml;
     new bootstrap.Tooltip("body", {
       selector: "[data-bs-toggle='tooltip']"
@@ -179,13 +194,15 @@ async function main(){
   //add clickability *once*
   fpicker.addEventListener("click",(e)=>{
     if(e.target.className.includes("filename")){
+      filedata.populateFile(e);
       playFile(e);
     }
   });
   fpicker.addEventListener("keydown",(e)=>{
   if(e.key == "Enter"){
     if(e.target.className.includes("filename")){
-      aplayer.toggle_play(e);
+      filedata.populateFile(e);
+      playFile(e);
     }
   }
   if(e.key == "ArrowDown" || e.key == "ArrowUp"){
@@ -205,9 +222,14 @@ async function main(){
   document.addEventListener("keydown", (e)=>{
     if(document.activeElement.attributes.hasOwnProperty("typehere")) return;
     e.preventDefault();
-    //speed browsing
-    //if(document.)
-    //if(e.key ==)
+    //speed browsing - k == keep, s == skip
+    if(aplayer.speedbrowse){
+      if(e.key == "K" || e.key == "k"){
+        keep_skip("keep");
+      } else if (e.key == "S" || e.key == "s"){
+        keep_skip("skip");
+      }
+    }
     switch(e.key){
       case "space":
       case " ":
@@ -224,7 +246,6 @@ async function main(){
     }
   });
 
-  
 
 
   // move to next tabindex item (borrowed from: https://stackoverflow.com/questions/7208161/focus-next-element-in-tab-index)
@@ -238,18 +259,46 @@ async function main(){
     }
   }
 
-  document.getElementById('addtagbox').addEventListener('keydown', (e) => {
-    if(!(/[a-z]|[0-9]|-| |\.|_/.test(e.key))){
-      e.preventDefault();
-    }
-    if(/^[A-Z]+$/.test(e.key)){
-      e.target.value = e.target.value + e.key.toLowerCase(); 
-    }
-    if(e.key = "Enter"){
-      console.log("ENTER");
-    }
-  })
 
+  async function keep_skip(action){
+    //removes pending-review from tags, adds the keep or leave tag, then calls save
+    let tags;
+    if(Array.isArray(filedata.currentSet[filedata.currentguid].tagstemp)){
+      tags = filedata.currentSet[filedata.currentguid].tagstemp;
+    } else {
+      tags = JSON.parse(filedata.currentSet[filedata.currentguid].tagstemp);
+    }
+    let idxpending = tags.indexOf("pending review");
+    let idxalt = (action === "keep") ? tags.indexOf("skip") : tags.indexOf("keep");
+    if(idxpending > -1) tags.splice(idxpending,1);
+    if(idxalt > -1) tags.splice(idxalt,1);
+    if(tags.indexOf(action) === -1) tags.push(action);
+
+    // populates the tag in the tag list
+    filedata.currentSet[filedata.currentguid].tagstemp = JSON.stringify(tags)
+    filedata.populateTags(tags, filedata.currentguid);
+
+    // saves the filedata
+    let polka = await filedata.save(filedata.currentguid);  
+
+    //select the next file in the list, circle back if there are no more
+    let filearray =  Object.getOwnPropertyNames(filedata.currentSet);
+    let curidx = filearray.indexOf(filedata.currentguid);
+    if(curidx == -1){
+      console.log("I'm fraking out here");
+      return
+    }
+
+    if(curidx === (filearray.length - 1)) curidx = -1;
+    // it's okay, it'll be 0 in the next line
+    let nextfile_guid = filearray[curidx+1];
+    
+    let nextfile = document.querySelector(`[picker-guid = '${nextfile_guid}']`)
+    let fakeEvent = new Event('click', {bubbles: true});
+    fakeEvent.target = nextfile;
+    nextfile.dispatchEvent(fakeEvent);
+    
+}
   
 
 

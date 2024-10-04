@@ -28,10 +28,20 @@ const aplayer = {
   pause_status: false,
   loop_status: false,
   autoplay: true,
+  speedbrowse: false,
   current_player: players.html,
   current_player_id: "html",
   current_duration: 0, // the actual duration
 };
+
+BROWSEFORM.speed.addEventListener("click", ()=>{
+  aplayer.speedbrowse = (BROWSEFORM.speed.checked) ? true : false;   
+});
+/* BROWSEFORM.autoplay.addEventListener("click", ()=>{
+  console.log("autoplay clicked");
+  aplayer.autoplay = (BROWSEFORM.autoplay.checked) ? true : false;   
+});*/
+
 
 //set up visible controls aliases
 aplayer.play_button = document.getElementById('play_button');
@@ -45,6 +55,8 @@ aplayer.clip_progress = document.getElementById('clip_progress');
 aplayer.clip_filename = document.getElementById('clip_filename');
   // fires once
   aplayer.clip_filename.innerText = "DEFAULT FILE: ringtone.mp3"
+
+
 
 
 // aplayer statuses use false for off and true for on

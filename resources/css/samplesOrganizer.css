@@ -25,6 +25,7 @@
 .br {
   /* uncomment the line below to outline every item with a "br" class assignment with a blue border */
   /* border: 2px solid blue; */  
+  border: none;
 }
 
 
@@ -190,9 +191,9 @@ html, body, .container, .container-fluid {
 }
 
 .taglist {
-  height: 180px;
-  max-height:180px;
-  min-height:180px;
+  height: 200px;
+  max-height:200px;
+  min-height:200px;
   margin: 0px;
   padding: 2px;
   border: 1pt solid #000;
@@ -209,4 +210,56 @@ html, body, .container, .container-fluid {
 
 input {
   background-color: #EFd;
+}
+
+#autosearch {
+  max-height: 200;
+  min-height: 0;
+  height:0;
+  width: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #999;
+}
+
+.tagsearch_active {
+  border: 1px solid #333;
+  padding: 5px;
+  display: block;
+  position: absolute;
+  z-index: 1000;
+}
+
+.tagsearch_inactive {
+  border: none;
+  padding: none;
+  display: none;
+}
+
+.tagbutton {
+  border: 2px solid #FF0;
+  background-color: #333308;
+  padding: 2px;
+  border-radius: 6px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+}
+
+.closeX {
+  border: 1pt solid #000;
+  background-color: #000;
+  font-weight: 900;
+  font-style: normal;
+  color: #fff;
+  padding: 3px;
+}
+
+.addtag_browse {
+  margin-top: 2px;
+  padding: 2px;
+  margin-bottom:2px;
+  font-size:12px;
+  line-height: 20px;;
 }

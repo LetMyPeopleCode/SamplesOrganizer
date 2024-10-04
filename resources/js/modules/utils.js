@@ -1,6 +1,20 @@
 const UTILS = {};
 var data_path ='';
 
+UTILS.arrayStringify = async (content) => {
+  // for stringifying tag arrays for addition to the filepicker
+  // should probably replace in next update with creating an array in memory
+  // of files in the picker and just give the picker a file ID which is then
+  // used to put data in the form.\
+  console.log(content); content = JSON.stringify(content);
+  content = content.replace("'[","[")
+  content = content.replace("]'","]")
+  moxie = content.replace(/\\/g,"");
+  moxie = moxie.replace(/\"/g,"'");
+  console.log(moxie); console.dir(JSON.parse(moxie));
+  return moxie;
+}
+
 UTILS.errorModal = function(errorMsg){
   let mymodal;
   document.getElementById("err-modal-body").innerHTML = errorMsg;
@@ -79,12 +93,18 @@ UTILS.launch = async () => {
     document.getElementById("main_app").setAttribute("hidden","hidden");
     document.getElementById("termsandconditions").removeAttribute("hidden");    
   } else {
-    MYDB.dbInit();
+    await MYDB.dbInit();
   }
 }
 
-UTILS.goLive = () => {
+UTILS.goLive = async () => {
   //main();
+  let populated = await MYDB.getTag("skipped");
+  if(populated.length === 0){
+    await MYDB.populateTagData();
+  }
+  MYDB.alltags = await MYDB.getAllTags();
+
   setTimeout(function(){
     document.getElementById("termsandconditions").setAttribute("hidden","hidden");          
     document.getElementById("splash_screen").setAttribute("hidden","hidden");
@@ -113,16 +133,78 @@ UTILS.getDataDir = async () => {
   return data_path;
 }
 
+/// AUTO RECOMMEND UTILITY
 
-UTILS.filterPotentialLicenses = (pathstring) => {
-  //reviews non-sound file names/paths for possible license documents, includes "distance" from file
-  // Distance 0, in same folder, 1 parent folder, 2 grandparent folder, etc...
-  // returns object with "possible" property, receiving function provides trues for selection 
+
+
+UTILS.searchPopulate = async (e) => {
+
+  if(!(/[a-z]|[0-9]|\-| |\.|_/.test(e.key))){
+    e.preventDefault();
+  }
+  if(/^[A-Z]+$/.test(e.key)){
+    e.target.value = e.target.value + e.key.toLowerCase(); 
+  }
+
+  if((e.target.value !== "") && (autosearch.className !== "tagsearch_active")) { 
+    UTILS.searchVisible(autosearch,"on")
+  } else if(e.target.value === "") {
+    UTILS.searchVisible(autosearch,"off")
+  }  
+
+  // find matches
+    let posstags = [];
+    MYDB.alltags.forEach(tag => {
+      let tagval = tag.tagname; tagval = tagval.toLowerCase();
+      if(tagval.includes(e.target.value)){
+        posstags.push(tag)
+      }
+    });
+    if (posstags.length === 0) {
+      UTILS.searchVisible(autosearch,"off");
+      return true;
+    }
+    posstags.sort();
+    let posshtml = "";
+    for(i in posstags){
+      let thistag = posstags[i];
+      posshtml += `<span class="addtag_browse"><button onclick="javascript:filedata.addTag(this, true);">${thistag.tagname}</button></span>\n`;
+    }
+    autosearch.innerHTML = posshtml;
+    autosearch.style.height = "150px";
+
 }
 
-UTILS.extractFileInfo = (pathstring) => {
-  // reviews sound file names/paths for BPM, Genre, Instrument(s), Producer/source
-  // returns object with that content, only inserting on first view 
 
+var autosearch = document.getElementById("autosearch");
+// get content changes
+document.getElementById('addtagbox').addEventListener('input', UTILS.searchPopulate)
+// respond to enter
+document.getElementById('addtagbox').addEventListener('keydown', (e) => {
+  if(e.code === "Enter") filedata.addTag("Enter");
+  if(!(/[a-z]|[0-9]|\-| |\.|_/.test(e.key))){
+    e.preventDefault();
+  }
+  if((filedata.currentguid === undefined) || (filedata.currentguid === null) ){
+    e.preventDefault();
+    return;
+  }
+});
+
+
+UTILS.searchVisible = (searchbox, action) => {
+  searchbox.className = (action === "on") ? "tagsearch_active" : "tagsearch_inactive";
 }
+
+UTILS.quickGuid = async () => {
+    // function from Google Gemini
+    return 'sample:Sxxx-Oxxx-yxxx-xxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  
+
+
+
 
