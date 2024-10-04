@@ -240,8 +240,8 @@
             <p><small>Source/Creator:</small><br>
             <input type="text" size="35" id="formfilesource" style="font-size:11px;" typehere autocomplete="off" spellcheck='false' autocorrect='off'></p>
             <p style="margin-bottom:0px;"><small>License File:</small><br>
-            <input type="text" size="25" id="formlicensepath" style="font-size:11px;" typehere> <button id="selectsource">Select</button></p>
-            <p aßlign="center" style="font-size:11px;padding=0px;margin:0px;"><a href="#" onclick="javascript:fileData.viewLicense">View license file in folder (if path)</a></p>
+            <input type="text" size="25" id="formlicensepath" style="font-size:11px;" typehere> <button id="select_license_source">Select</button></p>
+            <p align="center" style="font-size:11px;padding=0px;margin:0px;"><a href="#" id="viewlicense">View license file in folder (if path)</a></p>
             <p><small>Comments:</small><br>
             <textarea id="formcomments" style="font-size:11px;" cols="35" rows="9" typehere autocomplete="off" spellcheck='false' autocorrect='off'></textarea></p>
             <input hidden name="formfilepath" id="formfilepath">
@@ -261,7 +261,8 @@
         <div id="autosearch"></div>
           <p><small><b>This File's Tags</b> (click <i>x</i> to remove)</small><br>
           <div class="taglist" id="formfiletags"></div></p>
-          <p align="center"><button class = "btn btn-primary fpbutton" id="browse_savedata">&nbsp;Save Sample Information&nbsp;</button></p>      
+          <p align="center"><button class = "btn btn-primary fpbutton" id="browse_savedata">&nbsp;Save Sample Information&nbsp;</button></p>
+          <p align="center" class="saved" id="savemsg">Information Saved!</p>      
         </div>
         </div>
     </div>

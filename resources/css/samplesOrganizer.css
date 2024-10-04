@@ -263,3 +263,21 @@ input {
   font-size:12px;
   line-height: 20px;;
 }
+
+.saved {
+  opacity: 100%;
+  border: 1px solid #000;
+  padding: 3px;
+  background-color: #060;
+  border-radius: 5px;
+  line-height: 16px;
+  color: #fff;
+  animation: FADEOUT 3s;
+  display: none;
+}
+
+@keyframes FADEOUT {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+

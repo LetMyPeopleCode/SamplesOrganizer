@@ -137,6 +137,7 @@ async function main(){
       UTILS.errorModal("That directory does not seem to exist. Please select another directory.");
       return false;
     }
+    filedata.folderChoice = folderChoice;
     //read the files in the directory and all its subs
     let rawfiles = await fs.readDirectory(folderChoice, {recursive: true});
     //send them off for sorting (returns list of file objects)
@@ -147,24 +148,6 @@ async function main(){
     }
     let files = await filedata.parseFiles(rawfiles);
     let fileshtml = "";
-    let counter = 0;
-/*
-    while (files.length < 1 && counter < 5){
-      console.log("waiting for filedata", files.length);
-      let strong = await UTILS.sleep(250);
-      counter++;
-    }
-
-    let ti = 20;
-    
-    counter = 0;
-    while ((files[0].tagslength === 0) && counter < 50){
-       console.log("waiting for tags")
-       let strong = await UTILS.sleep(250);
-       counter++;
-     }
-*/
-
     let ti = 20;
     filedata.currentSet = {};
     filedata.currentguid = null;
@@ -216,7 +199,47 @@ async function main(){
   }
   });
 
+  // SET UP LICENSE CHOOSER
 
+  document.getElementById("select_license_source").addEventListener('click',getLicenseSource);
+
+  async function getLicenseSource(){
+    if(!filedata.folderChoice) filedata.folderChoice = await Neutralino.os.getPath('downloads');
+    let chosenpath = await Neutralino.os.showOpenDialog('SELECT A LICENSE FILE', {
+      defaultPath: filedata.folderChoice,
+      filters: [
+        {name: 'Possibles', extensions: ['txt', 'rtf', "doc", "docx", "pdf", "jpg", "png", "md"]},
+        {name: 'All files', extensions: ['*']}
+      ]
+    });
+    BROWSEFORM.license.value = chosenpath;
+  }
+
+  // SET UP LICENSE FOLDER VIEWER
+
+  document.getElementById("viewlicense").addEventListener('click',viewLicense);
+
+  async function viewLicense(){
+    console.log("viewing");
+    let licensepath = BROWSEFORM.license.value;
+    console.log(licensepath);
+    let pathstats;
+    try {
+      pathstats = await Neutralino.filesystem.getStats(licensepath);
+    } catch (e) {
+      UTILS.errorModal("The path is invalid. This means you may have (re)moved the directory or you may be using your own description instead of a path to the file.<br>&nbsp;<br>" + e);
+      return;
+    };
+
+    console.log("path is valid");
+
+    let pathparts = await Neutralino.filesystem.getPathParts(licensepath);
+    let parentpath = "\"" + pathparts.parentPath + "\"";
+    Neutralino.os.execCommand(`open ${parentpath}`);
+
+    
+
+  }
 
   // establish keyboard controls for player
   document.addEventListener("keydown", (e)=>{

@@ -225,10 +225,18 @@ filedata.save = async (guid = "") => {
     }
   }
 
-
   storeme.tagstemp = JSON.stringify(storeme.tags);
   storeme.tags = storeme.tagstemp;
   filedata.currentSet[filedata.currentguid] = storeme;
+
+  // show saved message
+  let saved = document.getElementById("savemsg");
+  saved.style.display = "block";
+  saved.style.opacity = 1;
+  window.setTimeout(() => {
+    saved.style.display = "none";    
+  }, 3000);
+
 }
 
 document.getElementById("browse_savedata").addEventListener("click",filedata.save);
