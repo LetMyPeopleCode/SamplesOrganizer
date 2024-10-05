@@ -118,19 +118,20 @@ UTILS.getDataDir = async () => {
   //for Mac, for example, it's /User/[username]/Library/Application Support
   let lib_path = await Neutralino.os.getPath("data");
   let app_path = lib_path + "/SamplesOrganizer/";
+  let dp_temp = '';
   try{
     let stats = await Neutralino.filesystem.getStats(app_path);
-    if(stats) data_path = app_path;
+    if(stats) dp_temp = app_path;
   } catch (e) {
     try{
-      await Neutralino.filesystem.createDirectory(app_path);
-      data_path = app_path;
+      let t = await Neutralino.filesystem.createDirectory(app_path);
+      dp_temp = app_path;
     } catch(e) {
       UTILS.error_modal("The data directory for this app cannot be created. The error given was: ", e);
       throw("Data Dir could not be created!")
     }
   }
-  return data_path;
+  return dp_temp;
 }
 
 /// AUTO RECOMMEND UTILITY
@@ -203,7 +204,49 @@ UTILS.quickGuid = async () => {
       return v.toString(16);
     });
   }
+
+UTILS.addone = (e) => {
+  console.log("adding");
+  let proto_element = document.getElementById("originalAddSearch");
+  let new_element = proto_element.cloneNode(true);
+  let top_node = document.getElementById("searchform");
+  let sibling = e.target.parentNode;
+  new_element.id = "childish_gambino";
+  new_element.removeAttribute("hidden");
+  sibling.after(new_element);
+//  top_node.appendChild(new_element);
+  UTILS.linkadds();
+}
+
+UTILS.killone = (e) => {
+  console.log("killing");
+  let to_remove = e.target.parentNode;
+  document.getElementById("searchform").removeChild(to_remove);
+
+}
   
+UTILS.linkadds = () =>{
+  let adds = document.querySelectorAll("#addone");
+  let kills = document.querySelectorAll("#killone");
+  
+  adds.forEach(mynode => {
+    console.log(mynode);
+    var old_element = mynode;
+    var new_element = old_element.cloneNode(true);
+    new_element.addEventListener('click', UTILS.addone);
+    old_element.parentNode.replaceChild(new_element, old_element);    
+  })
+
+  kills.forEach(mynode => {
+    console.log(mynode);
+    var old_element = mynode;
+    var new_element = old_element.cloneNode(true);
+    new_element.addEventListener('click', UTILS.killone);
+    old_element.parentNode.replaceChild(new_element, old_element);    
+  })
+  
+}
+
 
 
 

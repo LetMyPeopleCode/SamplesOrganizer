@@ -69,6 +69,23 @@
 </div>
 <!-- END MODAL-->
 
+<!-- MODAL FOR Search Form -->
+<!-- Modal -->
+<div class="modal fade" id="searchHelpModal" tabindex="-1" aria-labelledby="searchHelpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header mtExtra">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Using The Search Form</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div id="abt-modal-body" style="padding:10px;">
+        Search help content goes here, explaining the way it works, some tips, and pushing the results to the browse.
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END MODAL-->
+
 
 <!-- MODAL FOR FILE INFORMATION HELP -->
 <!-- Modal -->
@@ -222,7 +239,7 @@
 <!-- ------------------------------------------------------------------- -->
 <!--                       BROWSE SCREEN                                 --> 
 <!-- ------------------------------------------------------------------- -->
-<div id="browse_screen" class="container-fluid full-height main-app row appscreen" >
+<div id="browse_screen" class="container-fluid full-height main-app row appscreen" hidden>
 <div class="row">
   <div class="fp-wrapper col-5">
 <!--                        FILE PICKER                                  --> 
@@ -274,7 +291,8 @@
 </midi-player>
           <div id="player-controls">
             <button id="play_button" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="PLAY on/off (space)<br>RESTART (shift + PLAY)"><img src="icons/player-play.svg" class="playerbutton" id="play_icon"></button> &nbsp; <button id="pause_button" data-bs-toggle="tooltip" data-bs-title="PAUSE on/off (P)"><img src="icons/player-pause.svg" class="playerbutton" id="pause_icon"></button> &nbsp; <button  id="loop_button" data-bs-toggle="tooltip" data-bs-title="LOOP on/off (L)"><img src="icons/player-loop.svg" class="playerbutton" id="loop_icon"></button> &nbsp; <span id="clip_progress" class="playtime">0:00</span> / <span id="clip_length" class="playtime">0:00</span><br><span id="clip_filename" class="clip_file">No file selected</span>
-          </div>
+            </div>
+          </div> 
         </div>
       </div>
     </div>
@@ -284,9 +302,41 @@
 <!-- ------------------------------------------------------------------- -->
 <!--                       SEARCH SCREEN                                 --> 
 <!-- ------------------------------------------------------------------- -->
-<div id="search_screen" class=".container-fluid appscreen" hidden>
-    <h1>Search</h1>
+<div id="search_screen" class=".container-fluid appscreen">
+    <div class="row">
+    <!--                 SEARCH FORM                      -->
+     <!--                LEFT COLUMN                      -->
+     <div class="col-7 br browse-col2 searchform-col1">
+     <p><h3><b>Enter Your Query</b>&nbsp;&nbsp;<a class="navbar-brand" href="#" data-bs-toggle="modal" data-bs-target="#searchHelpModal"><img src="icons/question.png" height="32" alt="Question Mark Icon" data-bs-toggle="tooltip" data-bs-title="Search Help"></a></h3></p>
+     <div id="searchform">
+      <p class="mainsearch searchel"><select class="fieldtype">
+      <option value="file">File Name</option>
+      <option value="creator">Source/Creator</option>
+      <option value="file">License</option>
+      <option value="file">Comments</option>
+      <option value="file">Tag</option>
+    </select> &nbsp;  <select class="matchtype">
+      <option value="is">is</option>
+      <option value="isnot">isn't</option>
+      <option value="contains">contains</option>
+      <option value="containsnot">doesnt contain</option>
+    </select> &nbsp; <input size="25" class="fieldval" typehere autocomplete="off" spellcheck='false' autocorrect='off'> <a href="#" class="addremove" id="addone">+</a></p>
+    </div>
+    <div><button class="btn btn-primary fpbutton" id="startsearch" style="font-weight:700;">&nbsp;Search&nbsp;</button></div>
+
+     </div>
+     <!--                 END LEFT COLUMN                 -->
+     <!--                 RIGHT COLUMN                    -->
+     <div class="fp-wrapper col-5">
+    <!--                        RESULTS BOX                                  --> 
+        <div class="fptop"><b>Search Results</b></div>
+        <div class="filepicker" id="searchpicker"></div>
+        <center><button class="btn btn-primary fpbutton" style="margin-top:3px; font-weight:700;">&nbsp;Open Result Set in Browse&nbsp;</button></center> 
+      </div>
+     <!--                 END RIGHT COLUMN                -->
+
   </div>
+
 <!-- ------------------------------------------------------------------- -->
 <!--                      SETTINGS SCREEN                                --> 
 <!-- ------------------------------------------------------------------- -->
@@ -325,4 +375,21 @@
         UTILS.launch();
       }
     </script>
+        <p class="addedsearch searchel" id="originalAddSearch" hidden><select class="searchboolean">
+          <option value="and">and</option>
+          <option value="or">or</option>
+         </select>
+        <select class="fieldtype">
+          <option value="file">File Name</option>
+          <option value="creator">Source/Creator</option>
+          <option value="license">License</option>
+          <option value="comments">Comments</option>
+          <option value="tag">Tag</option> 
+        </select> &nbsp;  <select class="matchtype">
+        <option value="is">is</option>
+        <option value="isnot">isn't</option>
+        <option value="contains">contains</option>
+        <option value="containsnot">doesnt contain</option>
+      </select> &nbsp; <input size="25" class="fieldval" typehere autocomplete="off" spellcheck='false' autocorrect='off'> <a href="#" class="addremove" id="addone">+</a> <a href="#" id="killone" class="addremove">-</a></p>  
+    <body>
     </html>

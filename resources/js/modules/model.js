@@ -68,10 +68,6 @@ MYDB.addTag = async (tag) => {
     
 }
 
-MYDB.findByTags = (tagarray) => {
-  // TBD
-
-}
 
 MYDB.findOneFile = async (filepath) => {
   let results = await MYDB.samples.find({'filepath': { '$eq' : filepath }});
@@ -85,7 +81,6 @@ MYDB.reconcile = async (current, dbentry) => {
       if(current[i]){
       dbentry[i] = current[i];
       }
-//    console.dir(dbentry)  
   }
   return dbentry;  
 }
@@ -105,8 +100,6 @@ MYDB.addFile = async (fileinfo) => {
     }    
 }
 
-
-
 MYDB.getAllTags = async () => {
   // returns all the recorded tagdata as an array
   let alltagdata = await MYDB.tagdata.find({});
@@ -120,10 +113,27 @@ MYDB.getTag = async (tagname) => {
   return tagdata;
 }
 
-
 MYDB.searchByForm = () => {
+  //iterate through child nodes of the searchform div using querySelector to get the values of the individual elements;
+  let myform = document.getElementById("searchform");
+  let elements = myform.querySelectorAll(".searchel");
+  elements.forEach(element => {
+    let fieldval = element.querySelector(".fieldval").value;
+    let fieldtype = element.querySelector(".fieldtype").value;
+    let matchtype = element.querySelector(".matchtype").value;
+    let boolean = "";
+    try{
+      boolean = element.querySelector(".searchboolean").value;
+    } catch {
+      boolean = null;
+    }
+        
+    console.log (boolean, fieldtype, matchtype, fieldval);
+  })
+
 
 }
+document.getElementById("startsearch").addEventListener('click',MYDB.searchByForm);
 
 
 

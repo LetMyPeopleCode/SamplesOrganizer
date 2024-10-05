@@ -322,7 +322,8 @@ async function main(){
     nextfile.dispatchEvent(fakeEvent);
     
 }
-  
+ 
+  UTILS.linkadds();
 
 
 

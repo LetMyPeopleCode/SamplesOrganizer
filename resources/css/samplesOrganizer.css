@@ -281,3 +281,28 @@ input {
   100% { opacity: 0; }
 }
 
+.boxtitle {
+  width: 100%;
+  text-align: center;
+}
+
+.searchform-col1 {
+  padding-left:40px;
+  display: block;
+  min-height: 600px;
+  max-height:700px;
+  overflow-y: auto;
+  overflow-x: none;
+}
+
+.fieldval {
+  border: 1px solid #000;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.addremove {
+  color: #400;
+  text-decoration: none;
+  font-weight: 900;
+}
