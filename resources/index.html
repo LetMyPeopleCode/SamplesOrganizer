@@ -39,7 +39,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div id="abt-modal-body" style="padding:10px;">
-        Content goes here, direct to a readme on the github along with a pointer to look for question mark icons
+        <p>Our help can be found by clicking one of the question mark icons around the app, or in our <a href="#" class="repoclick">Github repository</a> in the <b>Docs</b> folder.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -78,8 +78,24 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Using The Search Form</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div id="abt-modal-body" style="padding:10px;">
-        Search help content goes here, explaining the way it works, some tips, and pushing the results to the browse.
+      <div id="abt-modal-body" class="myscroll" style="padding:10px;">
+        Before we explain the form, we need to explain two ideas: <b>AND</b> and <b>OR</b>.<ul>
+          <li><b>AND</b>: All conditions must be matched.</li>
+          <li><b>OR</b>: At least one condition must be matched</li></ul>
+        <p class="smalldivider">&nbsp;</p>
+        <u>Each text field can take multiple values, separated by commas:</u><ul><li>If you have multiple, they will be treated as an <b>OR</b></li><li><b>File Name</b> - <b>is</b> - <b>Loki, Thor</b> will come back with all files where the file name is exactly "Loki" <b>or</b> "Thor".</li></ul>
+        <p class="smalldivider">&nbsp;</p>
+        <u><b>is</b>, <b>is not</b>, <b>contains</b>, or <b>does not contain</b></u><ul>
+          <li><b>is</b>, <b>isn't</b>: Require an exact match. <b>is</b> "Thor, Loki" will only match records where the value is Thor or Loki (exactly). <b>isn't</b> would match every record but those.</li>
+          <li><b>contains</b>, <b>doesn't contain</b>: Requires a partial match. <b>contains</b> "Thor" would match "Thor" and "Thorn". <b>doesn't contain</b> would match every record but those.</li></ul>
+        <p class="smalldivider">&nbsp;</p>
+        <u><b>Each information type is connected by an AND</b></u>:<ul>
+          <li>If you set "<b>file name is 'Thor, Zeus'</b>" and "<b>tags is 'norse'</b>", it would only match Thor, because both the name <b>AND</b> the tag must be present.</li></ul>
+        <p class="smalldivider">&nbsp;</p>
+        <u><b>Tags has two lines: one with "contains" and one with "does not contain."</b></u>:<ul>
+          <li>If you want all the tags with an assigned BPM, you can just use <b>Tags contains "BPM"</b>, but since many sounds without a known BPM are assigned an "Unknown BPM" tag, adding <b>Tags does not contain "Unknown BPM"</b>, will exclude those.</li></ul>
+        <p class="smalldivider">&nbsp;</p>
+        The <b>Search Results</b> pane shows you the results of your search. To browse/edit any of those files use <b>Open Result Set In Browse</b> to switch back to the <b>Browse</b> tab and treat the search results like they're the contents of a directory.
       </div>
     </div>
   </div>
@@ -224,7 +240,7 @@
         <li class="nav-item">
           <a class="nav-link" id="search_top" href="#">Search</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" hidden>
           <a class="nav-link" id="settings_top" href="#">Settings</a>
         </li>
         <li class="nav-item">
@@ -308,20 +324,53 @@
      <!--                LEFT COLUMN                      -->
      <div class="col-7 br browse-col2 searchform-col1">
      <p><h3><b>Enter Your Query</b>&nbsp;&nbsp;<a class="navbar-brand" href="#" data-bs-toggle="modal" data-bs-target="#searchHelpModal"><img src="icons/question.png" height="32" alt="Question Mark Icon" data-bs-toggle="tooltip" data-bs-title="Search Help"></a></h3></p>
+     <p>
+      <b>PLEASE READ THE INSTRUCTIONS:</b> The way this search works needs a bit of explanation. Click the question mark above for instructions.
+     </p> 
      <div id="searchform">
-      <p class="mainsearch searchel"><select class="fieldtype">
-      <option value="file">File Name</option>
-      <option value="creator">Source/Creator</option>
-      <option value="file">License</option>
-      <option value="file">Comments</option>
-      <option value="file">Tag</option>
-    </select> &nbsp;  <select class="matchtype">
-      <option value="is">is</option>
-      <option value="isnot">isn't</option>
-      <option value="contains">contains</option>
-      <option value="containsnot">doesnt contain</option>
-    </select> &nbsp; <input size="25" class="fieldval" typehere autocomplete="off" spellcheck='false' autocorrect='off'> <a href="#" class="addremove" id="addone">+</a></p>
+      <p class="mainsearch searchel">
+        <input type="hidden" name="search_filename" value="filename" /><b>File Name: </b>  
+        </select> &nbsp;  <select class="matchtype" name="search_filenametype" id="filenametype">
+          <option value="is">is</option>
+          <option value="isnot">isn't</option>
+          <option value="contains">contains</option>
+          <option value="containsnot">doesnt contain</option>
+        </select> &nbsp; 
+        <input size="30" class="fieldval" name="search_filenameval" id="filenameval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+      </p>
+      <p class="mainsearch searchel">
+        <input type="hidden" name="search_creator" value="creator" /><b>Creator/Source: </b>  
+        </select> &nbsp;  <select class="matchtype" name="search_creatortype" id="creatortype">
+          <option value="is">is</option>
+          <option value="isnot">isn't</option>
+          <option value="contains">contains</option>
+          <option value="containsnot">doesnt contain</option>
+        </select> &nbsp; 
+        <input size="30" class="fieldval" name="search_creatorval" id="creatorval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+      </p>
+      <p class="mainsearch searchel">
+        <input type="hidden" name="search_licenses" value="licenses" /><b>License: </b>  
+        </select> &nbsp;  <select class="matchtype" name="search_licensetype" id="licensetype">
+          <option value="is">is</option>
+          <option value="isnot">isn't</option>
+          <option value="contains">contains</option>
+          <option value="containsnot">doesnt contain</option>
+        </select> &nbsp; 
+        <input size="30" class="fieldval" name="search_licenseval" id="licenseval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+      </p>
+      <p class="mainsearch searchel">
+        <input type="hidden" name="search_comments" value="comments" /><b>Comment: </b>  
+        </select> &nbsp;  <select class="matchtype" name="search_commenttype" id="commenttype">
+          <option value="is">is</option>
+          <option value="isnot">isn't</option>
+          <option value="contains">contains</option>
+          <option value="containsnot">doesnt contain</option>
+        </select> &nbsp; 
+        <input size="30" class="fieldval" name="search_commentval" id="commentval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+      </p>
     </div>
+
+
     <div><button class="btn btn-primary fpbutton" id="startsearch" style="font-weight:700;">&nbsp;Search&nbsp;</button></div>
 
      </div>
@@ -375,7 +424,8 @@
         UTILS.launch();
       }
     </script>
-        <p class="addedsearch searchel" id="originalAddSearch" hidden><select class="searchboolean">
+
+<!-- <p class="addedsearch searchel" id="originalAddSearch" hidden><select class="searchboolean">
           <option value="and">and</option>
           <option value="or">or</option>
          </select>
@@ -390,6 +440,6 @@
         <option value="isnot">isn't</option>
         <option value="contains">contains</option>
         <option value="containsnot">doesnt contain</option>
-      </select> &nbsp; <input size="25" class="fieldval" typehere autocomplete="off" spellcheck='false' autocorrect='off'> <a href="#" class="addremove" id="addone">+</a> <a href="#" id="killone" class="addremove">-</a></p>  
+      </select> &nbsp; <input size="25" class="fieldval" typehere autocomplete="off" spellcheck='false' autocorrect='off'> <a href="#" class="addremove" id="addone">+</a> <a href="#" id="killone" class="addremove">-</a></p>-->
     <body>
     </html>

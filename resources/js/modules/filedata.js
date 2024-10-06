@@ -95,7 +95,7 @@ filedata.parseFiles = async (dirbatch) => {
       if(bpmfetch !== null){
         sound.bpm = bpmfetch[1];
       } else {
-        sound.bpm = "0";
+        sound.bpm = "Unknown ";
       }
       let bpmtag = sound.bpm + "BPM";
       sound.tags = ["pending review", bpmtag];
