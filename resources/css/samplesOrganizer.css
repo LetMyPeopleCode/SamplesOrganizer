@@ -96,6 +96,10 @@ html, body, .container, .container-fluid {
   white-space: nowrap;
 }
 
+#searchpicker{
+  overflow-x: auto;
+}
+
 .fptop {
   padding:5px;
   min-width:240px;
@@ -316,4 +320,8 @@ input {
   max-height: 500px;
   overflow:hidden;
   overflow-y: auto;
+}
+
+.filename:focus {
+  background-color: #EEE !IMPORTANT;
 }

@@ -116,18 +116,15 @@ filedata.parseFiles = async (dirbatch) => {
 }
 
 filedata.populateFile = async (element) =>{
-  /*if(!element.hasOwnProperty("srcElement")) {
-    let boom = {srcElement: element};
-    element = boom;
-  }*/
   // grab our file guid (which changes each time we load the directory, thus we don't record it in the DB)
   let fileguid = element.srcElement.attributes["picker-guid"].value;
+  element.srcElement.focus();
   let fileinfo = filedata.currentSet[fileguid];
   fileinfo.tagstemp = fileinfo.tags;
   filedata.currentguid = fileguid;
 
   //populates the form with what we know or can guess
-  BROWSEFORM.filepath.value = element.srcElement.attributes["picker-path"].value;
+  BROWSEFORM.filepath.value = decodeURI(element.srcElement.attributes["picker-path"].value);
   BROWSEFORM.filename.value = decodeURI(element.srcElement.innerText);
   BROWSEFORM.license.value = decodeURI(fileinfo.license);
   BROWSEFORM.comments.value = decodeURI(fileinfo.comments);
@@ -198,11 +195,11 @@ filedata.save = async (guid = "") => {
   // if we implement clean/dirty, it resets the clean/dirty tag
 
   let storeme = await newSound();
-  storeme.filename = BROWSEFORM.filename.value;
-  storeme.filepath = BROWSEFORM.filepath.value;
-  storeme.license = BROWSEFORM.license.value;
-  storeme.comments = BROWSEFORM.comments.value;
-  storeme.creator = BROWSEFORM.creator.value;
+  storeme.filename = encodeURI(BROWSEFORM.filename.value);
+  storeme.filepath = encodeURI(BROWSEFORM.filepath.value);
+  storeme.license = encodeURI(BROWSEFORM.license.value);
+  storeme.comments = encodeURI(BROWSEFORM.comments.value);
+  storeme.creator = encodeURI(BROWSEFORM.creator.value);
   storeme.tags = JSON.parse(filedata.currentSet[filedata.currentguid].tagstemp);
   storeme.bpm = filedata.currentSet[filedata.currentguid].speed;
  
@@ -257,3 +254,36 @@ filedata.clearForm = () => {
   BROWSEFORM.tags.innerHTML = "";
 }
 
+filedata.populatePicker = async (files) =>{
+  files.sort((a,b) => {
+    a.filename.localeCompare(b.filename);
+  })
+  //console.dir(files);
+  let fpicker = document.getElementById("filepicker");
+  let fileshtml = "";
+  let ti = 20;
+  filedata.currentSet = {};
+  filedata.currentguid = null;
+  filedata.clearForm();
+  for (n in files) {
+    let fileguid = await UTILS.quickGuid();
+    //prevent collisions (despite a 1 in 74 quadrillion chance) Error message is just for fun.
+    while(filedata.currentSet[fileguid]){
+      UTILS.errorModal(`There was a rare collision on ID ${fileguid}, but we're fixing it.`)
+      fileguid = await UTILS.quickGuid();
+    }
+    let fileinfo = files[n];
+    ti+=1;
+    filedata.currentSet[fileguid] = fileinfo;
+    //let tags = await JSON.stringify(fileinfo.tags);
+      // do we need to sanitize names/paths/etc?
+    fileshtml += `<button picker-path="${fileinfo.filepath}" picker-type="${fileinfo.filetype}" picker-guid="${fileguid}" class="filename buttonlist" tabindex="${ti}">${fileinfo.filename}</button><br>`;
+  }
+
+  fpicker.innerHTML = fileshtml;
+  new bootstrap.Tooltip("body", {
+    selector: "[data-bs-toggle='tooltip']"
+  });
+  aplayer.allTabs = aplayer.catalogTabIndex();
+  return true;
+}

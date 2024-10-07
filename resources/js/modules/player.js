@@ -56,46 +56,6 @@ aplayer.clip_filename = document.getElementById('clip_filename');
   // fires once
   aplayer.clip_filename.innerText = "DEFAULT FILE: ringtone.mp3"
 
-
-
-
-// aplayer statuses use false for off and true for on
-
-/* different player control methods & events
-  KEEP THIS FOR REFERENCE FOR NEW CONTRIBS
-  html player: (HTML audio element)
-    paused: property - "paused" - boolean
-    play: method - play();
-    rewind/loop: method - load();
-    pause: method - pause();
-    unpause: method - play();
-    length: property - "duration" - (int in seconds);
-    progress: event - "timeupdate" - val: current_player.currentTime - float in ms
-
-  howler: (Howler Player)
-    autoplay: autoplay - property - boolean
-    paused: property - "paused" - boolean
-    play: method - play();
-    seek: method - seek(id, seconds) - without options, returns progress in currently playing item
-    rewind/loop: method - load();
-    pause: method - pause();
-    unpause: method - pause??();
-    EVENTS: onload, onplay, *onend*, onpause, onstop, 
-      - need play to trigger a setInterval or use Request Animation Frame. With RAF method it would query the player every XXX milliseconds and update the time only if it's playing.  
-
-    length: method - "duration(id)" - ID is ID of currently playing sound, without it will give duration of all queued sounds - (int in seconds);
-    progress: event - "timeupdate" - val: current_player.currentTime - float in ms
-
-  midi player: (https://github.com/cifkao/html-midi-player/tree/master)
-    play: method - start();
-    pause/stop: method - stop();
-    unpause: start();
-    restart: method - reload();
-    length: property - "duration" - (float in ms?)
-    progress: event - "note" - val: current_player.currentTime - float in ms?
-    */
-
-
 aplayer.toggle_play = (e = {}, rewind = false) => {
   //if there's nothing loaded ignore and return
   if(this.current_player === null) return false;

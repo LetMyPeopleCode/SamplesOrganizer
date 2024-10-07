@@ -47,7 +47,7 @@ async function main(){
   });
   /* END populate modal(s) */
 
-  function catalogTabIndex() {
+  aplayer.catalogTabIndex = async () => {
     let all_elements = Array.from(document.querySelectorAll(
       'a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])'
     )).filter(el => !el.hasAttribute('disabled'));
@@ -55,8 +55,7 @@ async function main(){
   }
 
   // init the all tabs var
-  var allTabs;
-  allTabs = catalogTabIndex();
+  aplayer.allTabs = await aplayer.catalogTabIndex();
 
   // START WINDOW RESIZE HANDLERS
   // Using percentages in CSS for certain elements is not working well when they get filled with content.
@@ -75,33 +74,34 @@ async function main(){
 
 
   // START APP CODE
+  aplayer.toggleScreens = (e) =>{
+    console.log("toggling");
+  let my_button = e.target.id;
+  let button_id = nav_buttons.indexOf(my_button);
+  if(button_id < 0){
+      alert("WTF"); return false;
+  }
+  for(let i = 0; i < nav_buttons.length; i++){
+      let tgtscreen = document.getElementById(nav_screens[i]);
+      let tgtbutton = document.getElementById(nav_buttons[i]);
+      if(i === button_id){
+          tgtscreen.removeAttribute("hidden");
+          tgtbutton.className = "nav-link active"
+      } else {
+          tgtscreen.setAttribute("hidden","hidden");
+          tgtbutton.className = "nav-link";
+      }
+  }
+}
 
   // START screen switching
   const nav_buttons = ["browse_top","search_top","settings_top"];
   const nav_screens = ["browse_screen","search_screen","settings_screen"];
   nav_buttons.forEach((element) => {
-    document.getElementById(element).addEventListener("click",toggleScreens)
+    document.getElementById(element).addEventListener("click",aplayer.toggleScreens)
   })
 
-  function toggleScreens(e){
-      alert("toggling");
-    let my_button = e.target.id;
-    let button_id = nav_buttons.indexOf(my_button);
-    if(button_id < 0){
-        alert("WTF"); return false;
-    }
-    for(let i = 0; i < nav_buttons.length; i++){
-        let tgtscreen = document.getElementById(nav_screens[i]);
-        let tgtbutton = document.getElementById(nav_buttons[i]);
-        if(i === button_id){
-            tgtscreen.removeAttribute("hidden");
-            tgtbutton.className = "nav-link active"
-        } else {
-            tgtscreen.setAttribute("hidden","hidden");
-            tgtbutton.className = "nav-link";
-        }
-    }
-  }
+
   // END screen switching
 
   //START filepicker
@@ -121,7 +121,7 @@ async function main(){
   }
 
   // set a GLOBAL variable for the tabindex;
-  var allTabs = [];
+  aplayer.allTabs = [];
 
   // Populate the picker
   async function populatePickerController(folderChoice){
@@ -147,31 +147,9 @@ async function main(){
       rawfiles.length = MAXOBJS;
     }
     let files = await filedata.parseFiles(rawfiles);
-    let fileshtml = "";
-    let ti = 20;
-    filedata.currentSet = {};
-    filedata.currentguid = null;
-    filedata.clearForm();
-    for (n in files) {
-      let fileguid = await UTILS.quickGuid();
-      //prevent collisions (despite a 1 in 74 quadrillion chance) Error message is just for fun.
-      while(filedata.currentSet[fileguid]){
-        UTILS.errorModal(`There was a rare collision on ID ${fileguid}, but we're fixing it.`)
-        fileguid = await UTILS.quickGuid();
-      }
-      let fileinfo = files[n];
-      ti+=1;
-      filedata.currentSet[fileguid] = fileinfo;
-      //let tags = await JSON.stringify(fileinfo.tags);
-        // do we need to sanitize names/paths/etc?
-      fileshtml += `<button picker-path="${fileinfo.filepath}" picker-type="${fileinfo.filetype}" picker-guid="${fileguid}" class="filename buttonlist" tabindex="${ti}">${fileinfo.filename}</button><br>`;
-    }
+    let waiter = await filedata.populatePicker(files)
+    aplayer.allTabs = await aplayer.catalogTabIndex();
 
-    fpicker.innerHTML = fileshtml;
-    new bootstrap.Tooltip("body", {
-      selector: "[data-bs-toggle='tooltip']"
-    });
-    allTabs = catalogTabIndex();
   }
 
   //add clickability *once*
@@ -272,12 +250,14 @@ async function main(){
 
 
   // move to next tabindex item (borrowed from: https://stackoverflow.com/questions/7208161/focus-next-element-in-tab-index)
-  function focusNextElement(direction) {
+  async function focusNextElement(direction) {
+    //aplayer.allTabs = await aplayer.catalogTabIndex();
+    console.dir(aplayer.allTabs);
     if (document.activeElement){
-      let current = allTabs.indexOf(document.activeElement);
-      if(allTabs[current].tabIndex > -1) {
+      let current = aplayer.allTabs.indexOf(document.activeElement);
+      if(aplayer.allTabs[current].tabIndex > -1) {
         if(current.tabIndex === 0 && direction === -1) direction = 0;
-        allTabs[current + direction].focus();
+        aplayer.allTabs[current + direction].focus();
       }
     }
   }
@@ -321,11 +301,7 @@ async function main(){
     fakeEvent.target = nextfile;
     nextfile.dispatchEvent(fakeEvent);
     
-}
- 
-  UTILS.linkadds();
-
-
+  }
 
 }
 

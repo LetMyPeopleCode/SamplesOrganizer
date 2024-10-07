@@ -255,7 +255,7 @@
 <!-- ------------------------------------------------------------------- -->
 <!--                       BROWSE SCREEN                                 --> 
 <!-- ------------------------------------------------------------------- -->
-<div id="browse_screen" class="container-fluid full-height main-app row appscreen" hidden>
+<div id="browse_screen" class="container-fluid full-height main-app row appscreen">
 <div class="row">
   <div class="fp-wrapper col-5">
 <!--                        FILE PICKER                                  --> 
@@ -274,12 +274,13 @@
             <input type="text" size="35" id="formfilesource" style="font-size:11px;" typehere autocomplete="off" spellcheck='false' autocorrect='off'></p>
             <p style="margin-bottom:0px;"><small>License File:</small><br>
             <input type="text" size="25" id="formlicensepath" style="font-size:11px;" typehere> <button id="select_license_source">Select</button></p>
-            <p align="center" style="font-size:11px;padding=0px;margin:0px;"><a href="#" id="viewlicense">View license file in folder (if path)</a></p>
+            <p align="center" style="font-size:11px;padding:0px;margin:0px;"><a href="#" id="viewlicense">View license file in folder (if path)</a></p>
             <p><small>Comments:</small><br>
             <textarea id="formcomments" style="font-size:11px;" cols="35" rows="9" typehere autocomplete="off" spellcheck='false' autocorrect='off'></textarea></p>
             <input hidden name="formfilepath" id="formfilepath">
             <h3><b>Controls</b></h3>
             <input type="checkbox" value="" id="speedbrowse" style="outline:2px solid #22F"> <label for="speedbrowse"><b>SpeedBrowse</b></label><br>
+            <a href="#" id="quickie">Run the test</a>
            <!-- <input type="checkbox" id="autoplay" style="outline:2px solid #22F"> <label for="autoplay"><b>Auto Play</b></label> -->
 
 
@@ -318,7 +319,7 @@
 <!-- ------------------------------------------------------------------- -->
 <!--                       SEARCH SCREEN                                 --> 
 <!-- ------------------------------------------------------------------- -->
-<div id="search_screen" class=".container-fluid appscreen">
+<div id="search_screen" class=".container-fluid appscreen" hidden>
     <div class="row">
     <!--                 SEARCH FORM                      -->
      <!--                LEFT COLUMN                      -->
@@ -329,44 +330,52 @@
      </p> 
      <div id="searchform">
       <p class="mainsearch searchel">
-        <input type="hidden" name="search_filename" value="filename" /><b>File Name: </b>  
-        </select> &nbsp;  <select class="matchtype" name="search_filenametype" id="filenametype">
+        <b>File Name: </b>  
+        </select> &nbsp;  <select class="matchtype" id="search_filenametype">
           <option value="is">is</option>
           <option value="isnot">isn't</option>
           <option value="contains">contains</option>
           <option value="containsnot">doesnt contain</option>
         </select> &nbsp; 
-        <input size="30" class="fieldval" name="search_filenameval" id="filenameval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+        <input size="30" class="fieldval" id="search_filenameval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
       </p>
       <p class="mainsearch searchel">
-        <input type="hidden" name="search_creator" value="creator" /><b>Creator/Source: </b>  
-        </select> &nbsp;  <select class="matchtype" name="search_creatortype" id="creatortype">
+        <b>Creator/Source: </b>  
+        </select> &nbsp;  <select class="matchtype" id="search_creatortype">
           <option value="is">is</option>
           <option value="isnot">isn't</option>
           <option value="contains">contains</option>
           <option value="containsnot">doesnt contain</option>
         </select> &nbsp; 
-        <input size="30" class="fieldval" name="search_creatorval" id="creatorval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+        <input size="30" class="fieldval" id="search_creatorval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
       </p>
       <p class="mainsearch searchel">
-        <input type="hidden" name="search_licenses" value="licenses" /><b>License: </b>  
-        </select> &nbsp;  <select class="matchtype" name="search_licensetype" id="licensetype">
+        <b>License: </b>  
+        </select> &nbsp;  <select class="matchtype" id="search_licensetype">
           <option value="is">is</option>
           <option value="isnot">isn't</option>
           <option value="contains">contains</option>
           <option value="containsnot">doesnt contain</option>
         </select> &nbsp; 
-        <input size="30" class="fieldval" name="search_licenseval" id="licenseval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+        <input size="30" class="fieldval" id="search_licenseval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
       </p>
       <p class="mainsearch searchel">
-        <input type="hidden" name="search_comments" value="comments" /><b>Comment: </b>  
-        </select> &nbsp;  <select class="matchtype" name="search_commenttype" id="commenttype">
+        <b>Comment: </b>  
+        </select> &nbsp;  <select class="matchtype" id="search_commenttype">
           <option value="is">is</option>
           <option value="isnot">isn't</option>
           <option value="contains">contains</option>
           <option value="containsnot">doesnt contain</option>
         </select> &nbsp; 
-        <input size="30" class="fieldval" name="search_commentval" id="commentval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+        <input size="30" class="fieldval" id="search_commentval" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+      </p>
+      <p class="mainsearch searchel">
+        <b>Tags contain: </b> &nbsp; 
+        <input size="30" class="fieldval" id="search_tags_contain" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
+      </p>
+      <p class="mainsearch searchel">
+        <b>Tags don't contain: </b> &nbsp; 
+        <input size="30" class="fieldval" id="search_tags_dont_contain" typehere autocomplete="off" spellcheck='false' autocorrect='off'>
       </p>
     </div>
 
@@ -380,7 +389,7 @@
     <!--                        RESULTS BOX                                  --> 
         <div class="fptop"><b>Search Results</b></div>
         <div class="filepicker" id="searchpicker"></div>
-        <center><button class="btn btn-primary fpbutton" style="margin-top:3px; font-weight:700;">&nbsp;Open Result Set in Browse&nbsp;</button></center> 
+        <center><button class="btn btn-primary fpbutton" id="pushToBrowse" style="margin-top:3px; font-weight:700;">&nbsp;Open Result Set in Browse&nbsp;</button></center> 
       </div>
      <!--                 END RIGHT COLUMN                -->
 
