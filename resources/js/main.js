@@ -254,6 +254,7 @@ async function main(){
     //aplayer.allTabs = await aplayer.catalogTabIndex();
     console.dir(aplayer.allTabs);
     if (document.activeElement){
+      console.log(aplayer.allTabs);
       let current = aplayer.allTabs.indexOf(document.activeElement);
       if(aplayer.allTabs[current].tabIndex > -1) {
         if(current.tabIndex === 0 && direction === -1) direction = 0;

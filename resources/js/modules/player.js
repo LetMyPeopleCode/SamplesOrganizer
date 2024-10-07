@@ -268,9 +268,12 @@ async function playFile(e){
   aplayer.play_icon,src = "icons/player-play.svg";
   aplayer.pause_icon.src = "icons/player-pause.svg";
 
+  // to handle possible URI encoding
+  let ppath = decodeURI(e.srcElement.attributes["picker-path"].value);
+
   // get binary blob and determine mimetype based on file handle
-  let filedata = await Neutralino.filesystem.readBinaryFile(e.srcElement.attributes["picker-path"].value);
-  let mimepre = SOUNDEXT.indexOf(e.srcElement.attributes["picker-type"].value);
+  let filedata = await Neutralino.filesystem.readBinaryFile(ppath);
+  let mimepre = SOUNDEXT.indexOf(parts.extension);
   let mimeType = SOUNDMIME[mimepre];
 
   //turn binary blob and mime type into a data URI

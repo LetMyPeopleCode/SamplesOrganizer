@@ -191,6 +191,7 @@ MYDB.prepResults = async (results) => {
   results_pane.innerHTML = "";
   results.forEach(result =>{
     res_counter++;
+    console.log("result", result)
     let entry = result;
     MYDB.results_temp.push(entry);
     results_pane.innerHTML += res_counter.toString() +": " + result.filename +"<br>";
@@ -261,7 +262,7 @@ let qtest = async () =>{
     console.dir(MYDB.samples.find(search));
 
 }
-document.getElementById("quickie").addEventListener('click',qtest);
+//document.getElementById("quickie").addEventListener('click',qtest);
 
 
 MYDB.populateTagData = async () => {

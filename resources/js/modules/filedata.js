@@ -133,6 +133,7 @@ filedata.populateFile = async (element) =>{
   if(!Array.isArray(fileinfo.tags)) filetags = JSON.parse(fileinfo.tags);
 
   filedata.populateTags(filetags, fileguid);
+  aplayer.allTabs = await aplayer.catalogTabIndex();
 
 }
 
@@ -254,6 +255,14 @@ filedata.clearForm = () => {
   BROWSEFORM.tags.innerHTML = "";
 }
 
+filedata.fixRecord = (fileinfo) => {
+
+  if(fileinfo.filetype == "" | fileinfo.filetype == null){
+    let fparts = Neutralino.filesystem.getPathParts(fileinfo.filepath);
+  }
+
+};
+
 filedata.populatePicker = async (files) =>{
   files.sort((a,b) => {
     a.filename.localeCompare(b.filename);
@@ -273,6 +282,7 @@ filedata.populatePicker = async (files) =>{
       fileguid = await UTILS.quickGuid();
     }
     let fileinfo = files[n];
+    console.log("fileinfo", fileinfo)
     ti+=1;
     filedata.currentSet[fileguid] = fileinfo;
     //let tags = await JSON.stringify(fileinfo.tags);
