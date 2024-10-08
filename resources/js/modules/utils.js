@@ -6,12 +6,11 @@ UTILS.arrayStringify = async (content) => {
   // should probably replace in next update with creating an array in memory
   // of files in the picker and just give the picker a file ID which is then
   // used to put data in the form.\
-  console.log(content); content = JSON.stringify(content);
+  console.log("stringifying", content); content = JSON.stringify(content);
   content = content.replace("'[","[")
   content = content.replace("]'","]")
   moxie = content.replace(/\\/g,"");
   moxie = moxie.replace(/\"/g,"'");
-  console.log(moxie); console.dir(JSON.parse(moxie));
   return moxie;
 }
 
@@ -23,7 +22,6 @@ UTILS.errorModal = function(errorMsg){
 }
 
 UTILS.sleep = function(ms) {
-    console.log ("sleeping " + ms.toString() + "ms");
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
@@ -80,11 +78,31 @@ UTILS.checkAgree = async () => {
   }
 }
 
+UTILS.trayMenu = (event) => {
+  if(event.detail.id == "quit") Neutralino.app.exit();
+}
+
+
+
 UTILS.launch = async () => {
-  console.log("launch launched")
+  // enable the tray menu
+  await Neutralino.events.on('trayMenuItemClicked', UTILS.trayMenu);
+
+    // tray options
+    let tray = {
+    icon: '/resources/icons/logo20.png',
+    menuItems: [
+      {id: "quit", text: "Quit"}
+    ]
+  };
+  try{
+    let bump = await Neutralino.os.setTray(tray);
+  } catch (e) {
+    UTILS.error_modal(e);
+  }
+    
+  
   data_path = await UTILS.getDataDir();
-  // splash screen temporarily disabled
-  document.getElementById("splash_screen").style.visibility = "none";    
   // check for whether the T&C has been accepted
   let agreed = await UTILS.checkAgree();
   if(!agreed) {
@@ -109,7 +127,7 @@ UTILS.goLive = async () => {
     document.getElementById("termsandconditions").setAttribute("hidden","hidden");          
     document.getElementById("splash_screen").setAttribute("hidden","hidden");
     document.getElementById("main_app").removeAttribute("hidden");
-  }, 500);
+  }, 1500);
 }    
 
 // checks if the data directory has been created, makes it if not, returns path

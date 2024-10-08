@@ -165,7 +165,6 @@ aplayer.stop = () => {
 }
 
 aplayer.set_duration = async () => { 
-  console.log("setting duration")
   // get the duration from the appropriate player
   var mytime;
   //technically we repeat ourselves below, but this is duped
@@ -177,7 +176,6 @@ aplayer.set_duration = async () => {
     // changing the song doesn't change the duration internally, so it stops early or late
     aplayer.current_player._duration = mytime;
   }
-  console.log("mytime", mytime)
   if(mytime < 1) mytime = 1;
 
   aplayer.duration = mytime;

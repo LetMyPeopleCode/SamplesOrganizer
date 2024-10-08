@@ -59,10 +59,10 @@ filedata.parseFiles = async (dirbatch) => {
     let filecheck = await MYDB.findOneFile(moo);
 
     if(filecheck){
-      sound.tags = await JSON.stringify(filecheck.tags);
-      sound.license = encodeURI(filecheck.license);
-      sound.comments = encodeURI(filecheck.comments);
-      sound.creator = encodeURI(filecheck.creator);
+      sound.tags = filecheck.tags;
+      sound.license = filecheck.license;
+      sound.comments = filecheck.comments;
+      sound.creator = filecheck.creator;
     } else {
       // test against licenses array
       
@@ -157,11 +157,11 @@ filedata.populateTags = (filetags, parentGUID) => {
 filedata.removeTag = (e) => {
   let tagname = e.parentElement.attributes["tag-value"].value;
   let guid = e.parentElement.attributes["tag-guid"].value;
-
-  let tagstemp = JSON.parse(filedata.currentSet[guid].tagstemp);
+  console.dir(tagname, guid, filedata.currentSet[filedata.currentguid])
+  let tagstemp = filedata.currentSet[guid].tagstemp;
   let idx = tagstemp.indexOf(tagname);
   tagstemp.splice(idx,1);
-  filedata.currentSet[guid].tagstemp = JSON.stringify(tagstemp)
+  filedata.currentSet[guid].tagstemp = tagstemp;
   filedata.populateTags(tagstemp, guid);  
 }
 
@@ -182,7 +182,7 @@ filedata.addTag = (e, isbutton=false) => {
     tags = JSON.parse(filedata.currentSet[filedata.currentguid].tags);
   }
   tags.push(tag);
-  tagstring = JSON.stringify(tags);
+  tagstring = tags;
   filedata.currentSet[filedata.currentguid].tags = tagstring;
   filedata.currentSet[filedata.currentguid].tagstemp = tagstring; 
   filedata.populateTags(tags, filedata.currentguid);
@@ -191,24 +191,26 @@ filedata.addTag = (e, isbutton=false) => {
 }
 document.getElementById("addTagButton").addEventListener("click",filedata.addTag);
 
-filedata.save = async (guid = "") => {
+filedata.save = async (e) => {
   // gets data from the form and samples array and saves it to the database AND updates the currentSet 
   // if we implement clean/dirty, it resets the clean/dirty tag
 
+  console.dir(e);
+
   let storeme = await newSound();
-  storeme.filename = encodeURI(BROWSEFORM.filename.value);
-  storeme.filepath = encodeURI(BROWSEFORM.filepath.value);
-  storeme.license = encodeURI(BROWSEFORM.license.value);
-  storeme.comments = encodeURI(BROWSEFORM.comments.value);
-  storeme.creator = encodeURI(BROWSEFORM.creator.value);
-  storeme.tags = JSON.parse(filedata.currentSet[filedata.currentguid].tagstemp);
+  storeme.filename = BROWSEFORM.filename.value;
+  storeme.filepath = BROWSEFORM.filepath.value;
+  storeme.license = BROWSEFORM.license.value;
+  storeme.comments = BROWSEFORM.comments.value;
+  storeme.creator = BROWSEFORM.creator.value;
+  storeme.tags = filedata.currentSet[filedata.currentguid].tagstemp;
   storeme.bpm = filedata.currentSet[filedata.currentguid].speed;
  
   let pr = storeme.tags.indexOf("pending review");
   if(pr > -1) storeme.tags.splice(pr,1);
 
   let add = await MYDB.addFile(storeme);
-  filedata.populateTags(storeme.tags, guid);
+  filedata.populateTags(storeme.tags, filedata.currentguid);
 
   // add new tags if needed
   let tts = [];
@@ -223,8 +225,7 @@ filedata.save = async (guid = "") => {
     }
   }
 
-  storeme.tagstemp = JSON.stringify(storeme.tags);
-  storeme.tags = storeme.tagstemp;
+  storeme.tagstemp = storeme.tags;
   filedata.currentSet[filedata.currentguid] = storeme;
 
   // show saved message
@@ -282,7 +283,6 @@ filedata.populatePicker = async (files) =>{
       fileguid = await UTILS.quickGuid();
     }
     let fileinfo = files[n];
-    console.log("fileinfo", fileinfo)
     ti+=1;
     filedata.currentSet[fileguid] = fileinfo;
     //let tags = await JSON.stringify(fileinfo.tags);

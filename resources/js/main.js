@@ -12,6 +12,7 @@ async function main(){
     Neutralino.app.exit();
   }
 
+
   var fpicker = document.getElementById('filepicker');
   fixFpick();
   var haudio = document.getElementById('haudio');
@@ -279,7 +280,7 @@ async function main(){
     if(tags.indexOf(action) === -1) tags.push(action);
 
     // populates the tag in the tag list
-    filedata.currentSet[filedata.currentguid].tagstemp = JSON.stringify(tags)
+    filedata.currentSet[filedata.currentguid].tagstemp = tags
     filedata.populateTags(tags, filedata.currentguid);
 
     // saves the filedata
@@ -303,7 +304,6 @@ async function main(){
     nextfile.dispatchEvent(fakeEvent);
     
   }
-
 }
 
 main();

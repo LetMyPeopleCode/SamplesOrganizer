@@ -23,7 +23,6 @@ MYDB.dbInit = async () => {
 }
 
 MYDB.verifyCollections = async () => {
-  console.log("verifying");
   MYDB.samples = await MYDB.db.getCollection("samples");
   if (MYDB.samples === null) {
     try{
@@ -92,7 +91,6 @@ MYDB.addFile = async (fileinfo) => {
     if(results.length == 0){
       let poppy = await MYDB.samples.insert(fileinfo);
     } else if(results.length === 1) {
-//      if(fileinfo.filepath == results[0].filepath) console.log("WTAF"); simply for showing there was an existing file
       let update = await MYDB.reconcile(fileinfo,results[0]);
       let dupe = await MYDB.samples.update(update);
     } else {
@@ -114,15 +112,11 @@ MYDB.getTag = async (tagname) => {
 }
 
 MYDB.composeString = async (tag, typestr, value, values, val_is_array) => {
-  console.log("making searchobj", tag, typestr, value, values, val_is_array);
   let searchObj = {};
   if(!val_is_array){
-    console.log("making single". searchObj)
     searchObj[tag] = {};
     let snoo = searchObj[tag];
-    console.log("okay", snoo)
     snoo[typestr] = value;
-    console.log("whaa", searchObj)
   } else if(val_is_array){
     searchObj = {"$or":[]};
       values.forEach(myval =>{
@@ -133,8 +127,6 @@ MYDB.composeString = async (tag, typestr, value, values, val_is_array) => {
       searchObj["$or"].push(snoo);
     })
   }
-
-  console.log("made");
 
   return searchObj;  
 
@@ -186,12 +178,12 @@ MYDB.results_temp = [];
 let res_counter = 0;
 
 MYDB.prepResults = async (results) => {
+  res_counter = 0;
   MYDB.results_temp = [];
   let results_pane = document.getElementById("searchpicker");
   results_pane.innerHTML = "";
   results.forEach(result =>{
     res_counter++;
-    console.log("result", result)
     let entry = result;
     MYDB.results_temp.push(entry);
     results_pane.innerHTML += res_counter.toString() +": " + result.filename +"<br>";
@@ -263,7 +255,6 @@ let qtest = async () =>{
 
 }
 //document.getElementById("quickie").addEventListener('click',qtest);
-
 
 MYDB.populateTagData = async () => {
   // a startup function that populates the tags collection with the contents
